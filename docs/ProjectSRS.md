@@ -18,7 +18,7 @@ Like you, we find the traditional process for earning interest long and frustrat
 
 ## 2. User Requirements
 #### 2.1. Software Interfaces
-Optimize setup of DataBase using [Docker](https://www.docker.com/). Google Firebase services: Crushlytics, Analytics via collecting data from the user, handle errors to improve the quality of the application. CoinMarketCap API to fetch all cryptocurrency data [CoinMarketCap](https://coinmarketcap.com/api/documentation).
+Optimize setup of DataBase using [Docker](https://www.docker.com/). Google Firebase services: Crushlytics, Analytics to collect data from the user, handle errors to improve the quality of the application. CoinMarketCap API to fetch all cryptocurrency data [CoinMarketCap](https://coinmarketcap.com/api/documentation).
 #### 2.2. User Interfaces
 You can check our design prototype at [Figma](https://www.figma.com/file/wMbUbB2b3GQln0crBhWyws/Crypto-Bot-Manager?node-id=0%3A1)
 #### 2.3. User Characteristics
