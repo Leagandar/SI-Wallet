@@ -8,7 +8,7 @@
 * Stay private & secure storing your privacy coins.
 * Invest and increase your assets.
 
-![](images/steps.png)
+</br>![](images/steps.png)
 
 Store all your coins and tokens in a single, secure mobile wallet. The app suppports 100+ assets
 Staking puts your assets to work, with interest rates ap to 40% APY
