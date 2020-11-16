@@ -1,6 +1,5 @@
-### Use Case diagramm
 ```plantuml
-@startuml
+@startuml Use Case diagramm
 
 left to right direction
 
