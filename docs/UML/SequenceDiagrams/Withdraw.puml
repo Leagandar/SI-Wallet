@@ -1,0 +1,52 @@
+```plantuml
+@startuml Withdraw
+
+actor User
+User -> UI: Withdraw Button
+activate UI
+
+UI -> WalletController: << POST >>
+activate WalletController
+
+WalletController -> WalletService: createTransaction(amount,adress,memo)
+activate WalletService
+deactivate WalletController
+
+
+WalletService -> WalletService: checkAdress
+activate WalletService
+deactivate WalletService
+
+alt exist == true
+
+WalletService --> WalletController: InvalidAdress
+activate WalletController
+WalletController --> UI : InvalidAdress
+deactivate WalletController
+UI --> User: Error(InvalidAdress) 
+
+else exist == false
+
+database Database
+WalletService -> WalletService: CreateTransaction
+activate WalletService
+WalletService -> Database: add new transaction
+activate Database
+WalletService <-- Database: new transaction Instance
+deactivate Database
+
+deactivate WalletService
+WalletService --> WalletController: return new TransactionInstance
+deactivate WalletService
+
+activate WalletController
+WalletController --> UI : Created
+deactivate WalletController
+
+UI --> User: Success(Withdraw)
+deactivate UI
+
+end
+
+@enduml
+```
