@@ -1,7 +1,7 @@
 # SIWallet Requirements
 ---
 ## 1. Introduction
-**SIWallet** - TypeScript-powered online store project with crossplatform mobile app and server side, based on [React Native](https://reactnative.dev/docs/) and [NestJS](https://docs.nestjs.com/)
+**SIWallet** - TypeScript-powered online project with crossplatform mobile app and server side, based on [React Native](https://reactnative.dev/docs/) and [NestJS](https://docs.nestjs.com/)
 **Everything you need in one place:**
 * Get & hold many different cryptocurrencies.
 * Store stablecoins to avoid market volatility.
