@@ -1,6 +1,9 @@
 ```plantuml
 @startuml Create Bot
 
+hide footbox
+
+
 actor Investor
 Investor -> "Create Bot : UI" as UI: Create Bot Button
 activate UI
