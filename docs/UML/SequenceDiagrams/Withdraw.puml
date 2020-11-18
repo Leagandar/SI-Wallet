@@ -1,6 +1,9 @@
 ```plantuml
 @startuml Withdraw
 
+hide footbox
+
+
 actor User
 User -> UI: Withdraw Button
 activate UI
@@ -27,13 +30,13 @@ UI --> User: Error(InvalidAdress)
 
 else exist == false
 
-database Database
+group API
 WalletService -> WalletService: CreateTransaction
 activate WalletService
-WalletService -> Database: add new transaction
-activate Database
-WalletService <-- Database: new transaction Instance
-deactivate Database
+WalletService -> API: add new transaction
+activate API
+WalletService <-- API: new transaction Instance
+deactivate API
 
 deactivate WalletService
 WalletService --> WalletController: return new TransactionInstance

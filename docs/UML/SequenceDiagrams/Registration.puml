@@ -1,6 +1,8 @@
 ```plantuml
 @startuml Registration
 
+hide footbox
+
 actor User
 User -> UI: RegisterButton
 activate UI
