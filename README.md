@@ -21,7 +21,9 @@ $ yarn install && yarn start
 ## Docs & Community
 
   * [Project SRS](/docs/ProjectSRS.md)
+  * [SIWallet UML Diagrams](/docs/UML/README.md)
   * [Documentation]() 
+
 
 ## Quick Start
 
