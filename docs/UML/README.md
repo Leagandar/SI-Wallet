@@ -30,7 +30,7 @@ The **Use Cases Diagram** is the following diagram:
 
 ### 4. Class Diagram
 
-![alternative text](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Leagandar/SI-Wallet/master/docs/UML/ClassDiagram.puml)
+![alternative text](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Leagandar/SI-Wallet/master/docs/UML/ClassDiagramBack.puml)
 
 
 ### 5. State Machine Diagrams
