@@ -45,7 +45,7 @@ The **Use Cases Diagram** is the following diagram:
 ### 6. Component & Deployment Diagrams
 #### 6.1.
 
-![alternative text](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Leagandar/SI-Wallet/master/docs/UML/ComponentAndDiploement.puml)
+![alternative text](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Leagandar/SI-Wallet/master/docs/UML/ComponentAndDiployment.puml)
 
 
 
