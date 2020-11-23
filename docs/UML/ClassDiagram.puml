@@ -1,5 +1,6 @@
 ```plantuml
 @startuml ClassDiagram
+
 abstract class model
 class User {
   -username: string
