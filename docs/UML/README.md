@@ -27,4 +27,25 @@ The **Use Cases Diagram** is the following diagram:
 
 ![alternative text](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Leagandar/SI-Wallet/master/docs/UML/SequenceDiagrams/Registration.puml)
 
+
+### 4. Class Diagram
+
+![alternative text](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Leagandar/SI-Wallet/master/docs/UML/ClassDiagram.puml)
+
+### 5. State Machine Diagrams
+#### 5.1. Coins Settings
+
+![alternative text](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Leagandar/SI-Wallet/master/docs/UML/StateMachineDiagrams/CoinsSettings.puml)
+
+#### 5.2. Create Bot
+
+![alternative text](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Leagandar/SI-Wallet/master/docs/UML/StateMachineDiagrams/CreateBot.puml)
+
+### 6. Component & Deployment Diagrams
+#### 6.1.
+
+![alternative text](http://www.plantuml.com/plantuml/proxy?cache=no&src=https://raw.githubusercontent.com/Leagandar/SI-Wallet/master/docs/UML/Component&Diploement.puml)
+
+
+
 ---
