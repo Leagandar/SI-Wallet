@@ -48,11 +48,7 @@ class AuthController{
 }
 
 AuthController -down-* UserService
-@enduml
-```
 
-```plantuml
-@startuml ClassDiagram2
 Package interfaces{
   interface UserDto{
     +username: string
