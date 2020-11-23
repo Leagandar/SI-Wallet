@@ -1,5 +1,5 @@
 ```plantuml
-@startuml
+@startuml Component&Diployment
 node server{
   component "WebServer"{
     [REST] .> HTTP : use

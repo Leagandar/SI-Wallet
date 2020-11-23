@@ -1,5 +1,5 @@
 ```plantuml
-@startuml
+@startuml ClassDiagram
 abstract class model
 class User {
   -username: string
@@ -52,7 +52,7 @@ AuthController -down-* UserService
 ```
 
 ```plantuml
-@startuml
+@startuml ClassDiagram2
 Package interfaces{
   interface UserDto{
     +username: string
