@@ -1,5 +1,5 @@
 ```plantuml
-@startuml
+@startuml 
 scale 600 width
 
 [*] --> Configuration : Create New Bot

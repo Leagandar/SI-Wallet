@@ -1,5 +1,5 @@
 ```plantuml
-
+@startuml
 node server{
   component "WebServer"{
     [REST] .> HTTP : use
@@ -13,5 +13,5 @@ node server{
 component "Client"{
   [UI] .right.> HTTP: use
 }
-
+@enduml
 ```

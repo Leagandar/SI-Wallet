@@ -1,4 +1,5 @@
 ```plantuml
+@startuml
 abstract class model
 class User {
   -username: string
@@ -10,7 +11,7 @@ class News{
   -api_id: string
 }
 
-model <|-- News 
+model <|-- News
 model <|-- User
 
 class NewsService{
@@ -38,7 +39,7 @@ class NewsController{
   +getNews(): Get()
 }
 
-NewsService *-- NewsController 
+NewsService *-- NewsController
 
 class AuthController{
   -userService: UserService
@@ -47,8 +48,11 @@ class AuthController{
 }
 
 AuthController -down-* UserService
+@enduml
 ```
+
 ```plantuml
+@startuml
 Package interfaces{
   interface UserDto{
     +username: string
@@ -58,8 +62,9 @@ Package interfaces{
   interface LoginDto{
     +email: string
     +password: sha256 string
-  } 
+  }
+
 }
 
-
+@enduml
 ```
