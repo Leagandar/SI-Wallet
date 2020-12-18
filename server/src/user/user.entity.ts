@@ -21,10 +21,10 @@ export class User extends Model<User>{
     })
     password: string;
 
-    @Column({
-        type: DataType.INTEGER,
-        defaultValue: 0,
-        allowNull: false,
-    })
-    balance: number;
+    // @Column({
+    //     type: DataType.INTEGER,
+    //     defaultValue: 0,
+    //     allowNull: false,
+    // })
+    // balance: number;
 }

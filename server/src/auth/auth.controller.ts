@@ -11,6 +11,7 @@ export class AuthController {
 
   @Post('create')
   async create(@Body() body: UserDto, @Res() res: Response){
+    
     let user: User | void = await this.userService.create(body).catch((err: Error) => {
       res.status(HttpStatus.BAD_REQUEST).json({error: err.message});
     })
