@@ -5,6 +5,7 @@ export class User extends Model<User>{
 	@Column({
 		type: DataType.STRING,
 		allowNull: false,
+		unique: true
 	})
 	username: string;
 
@@ -20,11 +21,4 @@ export class User extends Model<User>{
 		allowNull: false,
 	})
 	password: string;
-
-	// @Column({
-	//     type: DataType.INTEGER,
-	//     defaultValue: 0,
-	//     allowNull: false,
-	// })
-	// balance: number;
 }
