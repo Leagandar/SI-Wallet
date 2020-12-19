@@ -1,5 +1,6 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, Logger } from '@nestjs/common';
 import * as BlockIo from 'block_io';
+import Axios from 'axios';
 
 @Injectable()
 export class BlockchainService {
@@ -19,9 +20,30 @@ export class BlockchainService {
   }
 
   async getAdresses(username: string) {
-    let BTC = await this.BlockSystem.bitcoin.get_adresses_balance({ label: username }).catch((err: Error) => { throw err });
-    let LTC = await this.BlockSystem.litecoin.get_adresses_balance({ label: username }).catch((err: Error) => { throw err });
+    let BTC = await this.BlockSystem.bitcoin.get_address_balance({ label: username }).catch((err: Error) => { throw err });
+    let LTC = await this.BlockSystem.litecoin.get_address_balance({ label: username }).catch((err: Error) => { throw err });
     return [BTC?.data, LTC?.data];
   }
 
+  async getPrices(){
+    let BTC = await this.BlockSystem.bitcoin.get_current_price().catch((err: Error) => { throw err });
+    let LTC = await this.BlockSystem.litecoin.get_current_price().catch((err: Error) => { throw err });
+    return [BTC?.data, LTC?.data];
+  }
+
+  async archiveAddresses(username: string){
+    await this.BlockSystem.bitcoin.archive_addresses({ label: username }).catch((err: Error) => { throw err})
+    await this.BlockSystem.litecoin.archive_addresses({ label: username }).catch((err: Error) => { throw err })
+    return true;
+  }
+
+  async getNews(page: number){
+    let result = await Axios({
+      method: 'GET',
+      url: `https://cryptopanic.com/api/v1/posts/?auth_token=e6b95cde5cb3cb2b54ce9cae096c50f80658e581&page=${page}`,
+    }).catch((err: Error) => {
+      Logger.error(err)
+    })
+    return result ? result.data: null
+  }
 }
