@@ -5,10 +5,13 @@ import { USER_REPOSITORY } from '../core/constants';
 import * as sha256 from 'sha256'
 import { LoginFormDto } from 'src/auth/dto/login.dto';
 
+
 @Injectable()
 export class UserService {
 
-  constructor(@Inject(USER_REPOSITORY) public readonly userRepository: typeof User) { }
+  constructor(
+    @Inject(USER_REPOSITORY) public readonly userRepository: typeof User
+  ) { }
 
   async create(user: UserDto): Promise<User> {
     let object = user;
