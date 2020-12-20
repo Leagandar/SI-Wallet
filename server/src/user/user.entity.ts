@@ -4,6 +4,18 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
 export class User extends Model<User>{
 	@Column({
 		type: DataType.STRING,
+		allowNull: false
+	})
+	name: string
+
+	@Column({
+		type: DataType.STRING,
+		allowNull: false
+	})
+	surname: string
+
+	@Column({
+		type: DataType.STRING,
 		allowNull: false,
 		unique: true
 	})
@@ -21,4 +33,9 @@ export class User extends Model<User>{
 		allowNull: false,
 	})
 	password: string;
+
+	@Column({
+		type: DataType.BOOLEAN
+	})
+	notification:boolean;
 }

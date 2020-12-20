@@ -37,12 +37,32 @@ export class BlockchainService {
     return true;
   }
 
+  async getAssets(){
+    let result = await Axios({
+      method: 'GET',
+      url: `https://data.messari.io/api/v1/assets?fields=id,slug,symbol,metrics/market_data/price_usd`,
+    }).catch((err: Error) => {
+      throw err
+    })
+    return result ? result.data: null
+  }
+
+  async getAssetsBySlag(slag){
+    let result = await Axios({
+      method: 'GET',
+      url: `https://data.messari.io/api/v1/assets/${slag}/metrics`,
+    }).catch((err: Error) => {
+      throw err
+    })
+    return result ? result.data: null
+  }
+
   async getNews(page: number){
     let result = await Axios({
       method: 'GET',
-      url: `https://cryptopanic.com/api/v1/posts/?auth_token=e6b95cde5cb3cb2b54ce9cae096c50f80658e581&page=${page}`,
+      url: `https://api.lunarcrush.com/v2?data=feeds&key=v1bibsmqk69irs1vjogdu&limit=20&sources=news&page=${page}`,
     }).catch((err: Error) => {
-      Logger.error(err)
+      throw err
     })
     return result ? result.data: null
   }

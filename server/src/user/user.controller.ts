@@ -16,7 +16,8 @@ export class UserController {
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getAll(@Request() request): Promise<User[]> {
-    return await this.UserService.findAll();
+  async getAll(@Request() request): Promise<any> {
+    Logger.log("USER", JSON.stringify(request.user));
+    return await this.UserService.findOneById(request.user.userId);
   }
 }

@@ -15,4 +15,13 @@ describe('AuthService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
+
+  describe('LOGIN', () => {
+    it('should have property access_token', async () => {
+      expect(await service.login({
+        email: 'foo@bar.com', 
+        password: 'test'
+      })).toHaveProperty("access_token");
+    })
+  })
 });
