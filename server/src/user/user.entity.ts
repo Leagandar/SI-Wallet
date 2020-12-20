@@ -35,7 +35,8 @@ export class User extends Model<User>{
 	password: string;
 
 	@Column({
-		type: DataType.BOOLEAN
+		type: DataType.BOOLEAN,
+		defaultValue: true
 	})
 	notification:boolean;
 }

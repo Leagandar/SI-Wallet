@@ -1,18 +1,21 @@
-import { Body, Controller, Get, Logger, Post, Req, UseGuards, Request } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Post, Req, UseGuards, Request, Res, HttpStatus } from '@nestjs/common';
 import { UserService } from './user.service'
-import { UserDto } from './dto/user.dto';
-import { User } from './user.entity';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
-
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
+import { FullNameDto } from './dto/fullname.dto';
+import { Response } from 'express'
 
 @Controller('user')
 export class UserController {
   constructor(private UserService: UserService) { }
-
-  // @Post('create')
-  // async create(@Body() userDTO: UserDto): Promise<User>{
-  //   return await this.UserService.create(userDTO);
-  // }
+  
+  @UseGuards(JwtAuthGuard)
+  @Post('update')
+  async update(@Request() request, @Body() userDTO: FullNameDto, @Res() res: Response) {
+    await this.UserService.updateFullname(request.user.userId, userDTO).catch((err: Error) => {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: [err.message] })
+    });
+    res.status(HttpStatus.OK).json({ statusCode: 200, message: "Success" });
+  }
 
   @UseGuards(JwtAuthGuard)
   @Get()

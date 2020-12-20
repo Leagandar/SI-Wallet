@@ -16,6 +16,19 @@ describe('AuthService', () => {
     expect(service).toBeDefined();
   });
 
+
+  describe('SIGNUP',()=>{
+    it('should have property access_token', async () => {
+      expect(await service.register({
+        surname: 'Foo',
+        username: 'Foo', 
+        name: 'Bar',
+        email: 'foo@bar.com',
+        password: 'test'
+      })).toHaveProperty("access_token")
+    })
+  })
+
   describe('LOGIN', () => {
     it('should have property access_token', async () => {
       expect(await service.login({
@@ -24,4 +37,5 @@ describe('AuthService', () => {
       })).toHaveProperty("access_token");
     })
   })
+
 });

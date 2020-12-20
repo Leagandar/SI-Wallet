@@ -1,8 +1,8 @@
-import { Body, Controller, Get, HttpStatus, Post, Res, UseGuards, Request, Param, Logger } from '@nestjs/common';
-import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
+import { Body, Controller, Get, HttpStatus, Post, Res, UseGuards, Request, Param, Logger, Req } from '@nestjs/common';
+import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { BlockchainService } from './blockchain.service';
-import { UsernameDto } from './dto/username.dto';
 import { Response } from 'express'
+import { WithdrawDto } from './dto/withdraw.dto';
 
 @Controller('blockchain')
 export class BlockchainController {
@@ -13,8 +13,8 @@ export class BlockchainController {
   @UseGuards(JwtAuthGuard)
   @Get('/allBalance')
   async getBalance(@Request() req, @Res() res: Response) {
-    let result = await this.blockchainService.getAdresses(req.user.username).catch((Err: Error) => {
-      res.status(HttpStatus.BAD_REQUEST).json({ message: Err.message });
+    let result = await this.blockchainService.getAdresses(req.user.username).catch((err: Error) => {
+      res.status(HttpStatus.BAD_REQUEST).json({ message: [err.message] });
     })
     res.status(HttpStatus.OK).json(result);
   }
@@ -23,16 +23,16 @@ export class BlockchainController {
   @Get('/prices')
   async getPrices(@Res() res: Response) {
     let result = await this.blockchainService.getPrices().catch((err: Error) => {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: [err.message] });
     })
     res.status(HttpStatus.OK).json(result);
   }
   
   @UseGuards(JwtAuthGuard)
-  @Get('/news/:page')
-  async getNews(@Param('page') page: number, @Res() res: Response) {
-    let result = await this.blockchainService.getNews(page).catch((err: Error) => {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
+  @Get('/news')
+  async getNews(@Res() res: Response) {
+    let result = await this.blockchainService.getNews().catch((err: Error) => {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: [err.message] });
     })
     res.status(HttpStatus.OK).json(result);
   }
@@ -41,7 +41,7 @@ export class BlockchainController {
   @Get('/assets')
   async getAssets(@Res() res: Response){
     let result = await this.blockchainService.getAssets().catch((err: Error) => {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: [err.message] });
     })
     res.status(HttpStatus.OK).json(result);
   }
@@ -50,7 +50,17 @@ export class BlockchainController {
   @Get('/assets/:slag')
   async getAssetsBySlag(@Param('slag') slag: string, @Res() res: Response){
     let result = await this.blockchainService.getAssetsBySlag(slag).catch((err: Error) => {
-      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: err.message });
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: [err.message] });
+    })
+    res.status(HttpStatus.OK).json(result);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/withdraw')
+  async withdraw(@Body() body: WithdrawDto, @Res() res: Response, @Request() req){
+    Logger.log(body);
+    let result = await this.blockchainService.withdraw(req.user.username, body.network, body.amount, body.withdrawAddress).catch((err: Error) => {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: [err.message] });
     })
     res.status(HttpStatus.OK).json(result);
   }

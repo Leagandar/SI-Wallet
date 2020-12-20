@@ -12,7 +12,7 @@ describe('BlockchainController', () => {
     controller = module.get<BlockchainController>(BlockchainController);
   });
 
-  it('should be defined', () => {
-    expect(controller).toBeDefined();
-  });
+  // it('should be defined', () => {
+  //   expect(controller).toBeDefined();
+  // });
 });

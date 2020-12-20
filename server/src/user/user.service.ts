@@ -3,8 +3,9 @@ import { User } from './user.entity';
 import { UserDto } from './dto/user.dto';
 import { USER_REPOSITORY } from '../core/constants';
 import * as sha256 from 'sha256'
-import { LoginFormDto } from 'src/auth/dto/login.dto';
-import { BlockchainService } from 'src/blockchain/blockchain.service';
+import { LoginFormDto } from '../auth/dto/login.dto';
+import { BlockchainService } from '../blockchain/blockchain.service';
+import { FullNameDto } from './dto/fullname.dto';
 
 
 @Injectable()
@@ -29,7 +30,7 @@ export class UserService {
     await Promise.all(balance.map((one: any) => {
       allBalance += parseFloat(one.available_balance);
       return one.available_balance
-    }))
+    })).catch((err: Error) => { throw err })
     return {
       ...newUser.toJSON(),
       balance: balance,
@@ -37,6 +38,13 @@ export class UserService {
     }
   }
 
+  async updateFullname(id: number, user: FullNameDto) {
+    return await this.userRepository.update(user, {
+      where: {
+        id: id
+      }
+    }).catch((err: Error) => { throw err })
+  }
 
   async validate(user: LoginFormDto): Promise<any> {
     let UserData = await this.userRepository.findOne<User>({
@@ -46,6 +54,7 @@ export class UserService {
       },
       attributes: { exclude: ['password'] }
     });
+    if (!UserData) return null;
     let balance = await this.blockchain.getAdresses(UserData.username).catch((err: Error) => { throw err })
     let allBalance = 0;
     await Promise.all(balance.map((one: any) => {
@@ -80,10 +89,12 @@ export class UserService {
     }))
     return {
       ...UserData.toJSON(),
-      profit: '0.00%',
-      APY: '0%',
-      DDY: '0%', 
-      balance: balance,
+      profitAmount: 0,
+      profitPercent: 100,
+      APY: 0,
+      DDY: 0,
+      tradeBalance: 0,
+      //balance: balance,
       totalBalance: allBalance
     }
   }

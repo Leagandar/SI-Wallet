@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { UserDto } from 'src/user/dto/user.dto';
-import { UserService } from 'src/user/user.service';
+import { UserDto } from '../user/dto/user.dto';
+import { UserService } from '../user/user.service';
 import { LoginFormDto } from './dto/login.dto';
 
 @Injectable()
@@ -24,7 +24,7 @@ export class AuthService {
   }
 
   async login(user: LoginFormDto): Promise<{access_token: string} | null> {
-    let userData = await this.userService.validate(user)
+    let userData = await this.userService.validate(user).catch(err => {throw err})
     if(userData){
       const payload = { username: userData.username, sub: userData.id };
       return {
