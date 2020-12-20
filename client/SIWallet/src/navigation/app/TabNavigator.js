@@ -115,6 +115,7 @@ export const screenOptions = (navData) => {
       color: Colors.whiteTitle,
     },
     headerTitleAlign: 'center',
+    
   };
 };
 

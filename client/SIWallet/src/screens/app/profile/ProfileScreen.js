@@ -1,31 +1,47 @@
 import React, {useState, useEffect, useCallback} from 'react';
-import {StyleSheet, ScrollView} from 'react-native';
+import {StyleSheet, ScrollView, ActivityIndicator} from 'react-native';
 import Colors from '../../../constants/Colors';
 import * as Global from '../../../Global';
 import InfoCard from '../../../components/profileScreen/InfoCard';
 import UserPreviewCard from '../../../components/profileScreen/UserPreviewCard';
 import {useSelector, useDispatch} from 'react-redux';
 import * as UserAPI from '../../../API/UserAPI';
+import {CommonActions} from '@react-navigation/native';
+import * as authActions from '../../../store/actions/auth';
+import LoadingScreen from '../../../components/LoadingScreen';
+import ErrorScreen from '../../../components/ErrorScreen';
 
 const ProfileScreen = (props) => {
-  let {userId, token} = useSelector((state) => state.auth);
+  let {userId, token, user} = useSelector((state) => state.auth);
+  console.log("TOKEN");
+  console.log(token);
   const [isLoading, setIsLoading] = useState(false);
   const [loadingError, setLoadingError] = useState();
+  const dispatch = useDispatch();
 
-  const loadUserinfo = useCallback(async (userId, token) => {
+  const loadUserinfo = useCallback(async (token) => {
     let result;
     setIsLoading(true);
     setLoadingError(undefined);
 
     try {
-      result = await UserAPI.getUsersInfo(userId, token, [userId], appLanguage);
+      result = await UserAPI.getUserInfo(token);
+      if (result.statusCode === 401) {
+        props.navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{name: 'Auth'}],
+          }),
+        );
+      }
       if (result.statusCode === 200) {
-        setCurrentUser(result.data.users[userId]);
+        dispatch(authActions.setUserInfo(result.data));
       } else {
+        console.log(result);
         const errorId = result.data.errors?.[0];
-        let message = Constants.getErrorMessage(
+        let message = Global.getErrorMessage(
           errorId,
-          'AccountScreen/getUserInfo',
+          'ProfileScreen/getUserInfo',
           false,
         );
         throw new Error(message);
@@ -39,85 +55,104 @@ const ProfileScreen = (props) => {
   }, []);
 
   useEffect(() => {
-    loadUserinfo(userId, token);
+    loadUserinfo(token);
   }, [userId, token]);
 
-  return (
-    <ScrollView style={{flex: 1, backgroundColor: Colors.blackBackground}}>
-      <UserPreviewCard
-        userName="Graham Stephan"
-        userBalance={'8.210,00'}
-        cardStyle={{marginTop: 20, marginBottom: 24}}
-        onManageProfilePress={() => {
-          props.navigation.navigate('ProfileNavigator', {
-            screen: 'EditProfile',
-          });
+  if (loadingError) {
+    return (
+      <ErrorScreen
+        isAction={true}
+        errorText="An error occured while loading user info, try again"
+        onErrorPress={() => {
+          loadUserinfo(token);
         }}
-        onWalletPress={() => {
-          props.navigation.navigate('ProfileNavigator', {
-            screen: 'Wallet',
-          });
-        }}
-        isButtonsEnabled={true}
       />
-      <InfoCard
-        contentList={[
-          {
-            title: 'First name',
-            value: 'Graham',
-          },
-          {
-            title: 'Last name',
-            value: 'Stephan',
-          },
-          {
-            title: 'Email',
-            value: 'gram.stephan@gmail.com',
-          },
-          {
-            title: 'Phone',
-            value: '+14845101972',
-          },
-        ]}
-        title="Account Info"
-        cardStyle={{marginBottom: 24, height: 194}}
-      />
-      <InfoCard
-        contentList={[
-          {
-            title: 'Balance',
-            value: '$7.240,16',
-          },
-          {
-            title: 'TradeBalance',
-            value: '$768,16',
-          },
-          {
-            title: 'TotalProfit',
-            value: '$2300,21/7,61%',
-            valueStyle: {color: Colors.greenMain},
-          },
-          {
-            title: 'APY',
-            value: '73%',
-            valueStyle: {color: Colors.greenMain},
-          },
-          {
-            title: 'DDY',
-            value: '0,23%',
-            valueStyle: {color: Colors.greenMain},
-          },
-          {
-            title: 'Notifications',
-            value: 'On',
-            valueStyle: {color: Colors.greenMain},
-          },
-        ]}
-        title="Balance Info"
-        cardStyle={{marginBottom: 24, height: 244}}
-      />
-    </ScrollView>
-  );
+    );
+  } else if (isLoading || !user) {
+    return <LoadingScreen />;
+  } else {
+    return (
+      <ScrollView style={{flex: 1, backgroundColor: Colors.blackBackground}}>
+        <UserPreviewCard
+          userName={user?.accountInfo.name + ' ' + user?.accountInfo.surname}
+          userBalance={user?.balanceInfo.totalBalance}
+          cardStyle={{marginTop: 20, marginBottom: 24}}
+          onManageProfilePress={() => {
+            props.navigation.navigate('ProfileNavigator', {
+              screen: 'EditProfile',
+            });
+          }}
+          onWalletPress={() => {
+            props.navigation.navigate('ProfileNavigator', {
+              screen: 'Wallet',
+            });
+          }}
+          isButtonsEnabled={true}
+        />
+        <InfoCard
+          contentList={[
+            {
+              title: 'First name',
+              value: user?.accountInfo.name,
+            },
+            {
+              title: 'Last name',
+              value: user?.accountInfo.surname,
+            },
+            {
+              title: 'Email',
+              value: user?.accountInfo.email,
+            },
+          ]}
+          title="Account Info"
+          cardStyle={{marginBottom: 24, height: 174}}
+        />
+        <InfoCard
+          contentList={[
+            {
+              title: 'Balance',
+              value: '$' + user?.balanceInfo.totalBalance,
+            },
+            {
+              title: 'TradeBalance',
+              value: '$' + user?.balanceInfo.tradeBalance,
+            },
+            {
+              title: 'TotalProfit',
+              value:
+                '$' +
+                user?.balanceInfo.profitAmount +
+                ' / ' +
+                user?.balanceInfo.profitPercent +
+                '%',
+              valueStyle: {color: Colors.greenMain},
+            },
+            {
+              title: 'APY',
+              value: user?.balanceInfo.APY + '%',
+              valueStyle: {color: Colors.greenMain},
+            },
+            {
+              title: 'DDY',
+              value: user?.balanceInfo.DDY + '%',
+              valueStyle: {color: Colors.greenMain},
+            },
+            {
+              title: 'Notifications',
+              value: user?.balanceInfo.notifications ? 'On' : 'off',
+              valueStyle: {
+                color: user?.balanceInfo.notifications
+                  ? Colors.greenMain
+                  : Colors.red,
+              },
+            },
+          ]}
+          title="Balance Info"
+          cardStyle={{marginBottom: 24, height: 244}}
+        />
+      </ScrollView>
+    );
+  }
 };
 
 export const screenOptions = (navData) => {

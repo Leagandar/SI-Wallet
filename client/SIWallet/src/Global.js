@@ -7,7 +7,7 @@ export const fonts = {
 
 let TOKEN = '';
 
-export const SERVER_ADDRESS = 'https://karmik.ua/api';
+export const SERVER_ADDRESS = 'http://5d207144e415.ngrok.io';
 
 export function getToken() {
   return TOKEN;
@@ -15,4 +15,26 @@ export function getToken() {
 
 export function setToken(token) {
   TOKEN = token;
+}
+
+export function getErrorMessage(errorId, source, details = true) {
+  let message;
+  switch (errorId) {
+    case 'email must be an email':
+      message = 'Invalid email, try again';
+      break;
+    case 'User with this username already exists':
+      message = 'User with this username already exists';
+      break;
+    case 'Wrong login or password':
+      message = 'Wrong email or password';
+      break;
+    default:
+      message = 'Something went wrong';
+  }
+  if (details) {
+    return `Возникла ошибка в ${source} => ` + message;
+  } else {
+    return message;
+  }
 }

@@ -5,8 +5,10 @@ import * as Global from '../../Global';
 
 const DoneButton = (props) => {
   return (
-    <TouchableOpacity style={styles.button} onPress={props.onPress}>
-      <Text style={styles.buttonText}>Done</Text>
+    <TouchableOpacity
+      style={{...styles.button, ...props.buttonStyle}}
+      onPress={props.onPress}>
+      <Text style={styles.buttonText}>{props.title}</Text>
     </TouchableOpacity>
   );
 };
@@ -20,13 +22,14 @@ const styles = StyleSheet.create({
     borderBottomRightRadius: 24,
     alignItems: 'flex-end',
     marginRight: 42,
+    marginBottom: 20,
   },
   buttonText: {
     fontFamily: Global.fonts.BALSAMIQ_BOLD,
     color: Colors.white,
     fontSize: 24,
     marginRight: 30,
-    marginBottom: 5
+    marginBottom: 5,
   },
 });
 

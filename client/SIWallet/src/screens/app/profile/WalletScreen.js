@@ -1,75 +1,91 @@
-import React from 'react';
+import React, {useState, useEffect, useCallback} from 'react';
 import {Text, View, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import Colors from '../../../constants/Colors';
 import * as Global from '../../../Global';
 import BalanceInfoCard from '../../../components/profileScreen/BalanceInfoCard';
 import CurrencyList from '../../../components/profileScreen/CurrencyList';
+import * as WalletAPI from '../../../API/WalletAPI';
+import {useSelector, useDispatch} from 'react-redux';
+import * as authActions from '../../../store/actions/auth';
+import LoadingScreen from '../../../components/LoadingScreen';
+import ErrorScreen from '../../../components/ErrorScreen';
 
 const WalletScreen = (props) => {
-  return (
-    <View style={{flex: 1, backgroundColor: Colors.blackBackground}}>
-      <BalanceInfoCard
-        onSendPress={() => {}}
-        onReceivePress={() => {}}
-        dayChangePercent="+8.1"
-        dayChange="243"
-        balance="12.679,13"
-        cardStyle={{marginTop: 20, marginBottom: 24}}
+  let {token, userId, wallet} = useSelector((state) => state.auth);
+  const [isLoading, setIsLoading] = useState(false);
+  const [loadingError, setLoadingError] = useState();
+  const dispatch = useDispatch();
+
+  const loadWalletInfo = useCallback(async (token) => {
+    let result;
+    setIsLoading(true);
+    setLoadingError(undefined);
+
+    try {
+      result = await WalletAPI.getWalletInfo(token);
+      if (result.statusCode === 200) {
+        dispatch(authActions.setWalletInfo(result.data));
+      } else {
+        console.log(result);
+        const errorId = result.data.errors?.[0];
+        let message = Global.getErrorMessage(
+          errorId,
+          'ProfileScreen/getUserInfo',
+          false,
+        );
+        throw new Error(message);
+      }
+    } catch (err) {
+      setLoadingError(err.message);
+      console.log('error while getting user info -->' + err.message);
+      setIsLoading(false);
+    }
+    setIsLoading(false);
+  }, []);
+
+  useEffect(() => {
+    loadWalletInfo(token);
+  }, [userId, token]);
+
+  if (loadingError) {
+    return (
+      <ErrorScreen
+        isAction={true}
+        errorText="An error occured while loading wallet info, try again"
+        onErrorPress={() => {
+          loadUserinfo(token);
+        }}
       />
-      <CurrencyList
-        currencies={[
-          {
-            title: 'Bitcoin',
-            image: require('../../../assets/images/profileScreen/bitcoin.png'),
-            profit: '3.67',
-            adress: '0x7e9ba0...6073bf',
-            amount: '0,9734',
-            price: '12.145,54',
-          },
-          {
-            title: 'Tron',
-            image: require('../../../assets/images/profileScreen/tron.png'),
-            profit: '2.11',
-            adress: '0x7e9ba0...6073bf',
-            amount: '230.9',
-            price: '23.524',
-          },
-          {
-            title: 'Ripple',
-            image: require('../../../assets/images/profileScreen/ripple.png'),
-            profit: '-5.67',
-            adress: '0x7e9ba0...6073bf',
-            amount: '13.95',
-            price: '117.54',
-          },
-          {
-            title: 'Bitcoin',
-            image: require('../../../assets/images/profileScreen/bitcoin.png'),
-            profit: '3.67',
-            adress: '0x7e9ba0...6073bf',
-            amount: '0,9734',
-            price: '12.145,54',
-          },
-          {
-            title: 'Tron',
-            image: require('../../../assets/images/profileScreen/tron.png'),
-            profit: '2.11',
-            adress: '0x7e9ba0...6073bf',
-            amount: '230.9',
-            price: '23.524',
-          },
-          {
-            title: 'Ripple',
-            image: require('../../../assets/images/profileScreen/ripple.png'),
-            profit: '-5.67',
-            adress: '0x7e9ba0...6073bf',
-            amount: '13.95',
-            price: '117.54',
-          },
-        ]}
-      />
-    </View>
-  );
+    );
+  } else if (isLoading || !wallet) {
+    return <LoadingScreen />;
+  } else {
+    return (
+      <View style={{flex: 1, backgroundColor: Colors.blackBackground}}>
+        <BalanceInfoCard
+          onSendPress={() => {}}
+          onReceivePress={() => {}}
+          dayChangePercent="+8.1"
+          dayChange="243"
+          balance="12.679,13"
+          cardStyle={{marginTop: 20, marginBottom: 24}}
+          onSendPress={() => {
+            props.navigation.navigate('Coins', {
+              wallet: wallet,
+              type: 'send',
+            });
+          }}
+          onReceivePress={() => {
+            props.navigation.navigate('Coins', {
+              wallet: wallet,
+              type: 'receive',
+            });
+          }}
+        />
+        <CurrencyList currencies={wallet} />
+      </View>
+    );
+  }
 };
 
 export const screenOptions = (navData) => {

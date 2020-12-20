@@ -13,13 +13,18 @@ import InfoCard from '../../../components/profileScreen/InfoCard';
 import UserPreviewCard from '../../../components/profileScreen/UserPreviewCard';
 import InfoChecksCard from '../../../components/profileScreen/InfoChecksCard';
 import DoneButton from '../../../components/profileScreen/DoneButton';
+import {CommonActions} from '@react-navigation/native';
+import * as authActions from '../../../store/actions/auth';
+import {useDispatch, useSelector} from 'react-redux';
 
 const EditProfileScreen = (props) => {
+  let {userId, token, user} = useSelector((state) => state.auth);
+  const dispatch = useDispatch();
   return (
     <ScrollView style={{flex: 1, backgroundColor: Colors.blackBackground}}>
       <UserPreviewCard
-        userName="Graham Stephan"
-        userBalance={'8.210,00'}
+        userName={user?.accountInfo.name + ' ' + user?.accountInfo.surname}
+        userBalance={user?.balanceInfo.totalBalance}
         cardStyle={{marginTop: 20, marginBottom: 24}}
         isButtonsEnabled={false}
       />
@@ -27,19 +32,15 @@ const EditProfileScreen = (props) => {
         contentList={[
           {
             title: 'First name',
-            value: 'Graham',
+            value: user?.accountInfo.name,
           },
           {
             title: 'Last name',
-            value: 'Stephan',
+            value: user?.accountInfo.surname,
           },
           {
             title: 'Email',
-            value: 'gram.stephan@gmail.com',
-          },
-          {
-            title: 'Phone',
-            value: '+14845101972',
+            value: user?.accountInfo.email,
           },
         ]}
         title="Account Info"
@@ -47,8 +48,8 @@ const EditProfileScreen = (props) => {
         isEditEnabled={true}
         onEditPress={() => {
           props.navigation.navigate('EnterUserInfo', {
-            name: 'Graham',
-            surname: 'Stephan',
+            name: user?.accountInfo.name,
+            surname: user?.accountInfo.surname,
           });
         }}
       />
@@ -56,7 +57,7 @@ const EditProfileScreen = (props) => {
         contentList={[
           {
             title: 'Notifications',
-            value: true,
+            value: props.notifications,
           },
           {
             title: 'Auto-reneval',
@@ -64,7 +65,7 @@ const EditProfileScreen = (props) => {
           },
           {
             title: 'Bots-status',
-            value: true,
+            value: false,
             valueStyle: {color: Colors.greenMain},
           },
         ]}
@@ -75,6 +76,21 @@ const EditProfileScreen = (props) => {
         onPress={() => {
           props.navigation.goBack();
         }}
+        title="Done"
+        buttonStyle={{marginBottom: 5}}
+      />
+      <DoneButton
+        onPress={() => {
+          dispatch(authActions.logout());
+          props.navigation.dispatch(
+            CommonActions.reset({
+              index: 1,
+              routes: [{name: 'Auth'}],
+            }),
+          );
+        }}
+        buttonStyle={{backgroundColor: '#F0542B'}}
+        title="Exit"
       />
     </ScrollView>
   );

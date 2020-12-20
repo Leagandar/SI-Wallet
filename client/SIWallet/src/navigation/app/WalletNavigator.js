@@ -1,4 +1,5 @@
 import React from 'react';
+import {View, TouchableOpacity, Image} from 'react-native';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import TabNavigator, {screenOptions as tabScreenOptions} from './TabNavigator';
 import ProfileNavigator from './ProfileNavigator';
@@ -8,6 +9,8 @@ import BotsNavigator from './BotsNavigator';
 import AuthNavigator from '../auth/AuthNavigator';
 import Colors from '../../constants/Colors';
 import StartupScreen from '../../screens/StartupScreen';
+import {getFocusedRouteNameFromRoute} from '@react-navigation/native';
+import * as Global from '../../Global';
 
 const MyStackNavigator = createStackNavigator();
 
@@ -25,16 +28,45 @@ const WalletNavigator = (props) => {
   return (
     <MyStackNavigator.Navigator
       screenOptions={defaultNavOptions}
-      initialRouteName="TabNavigator">
-      {/* <MyStackNavigator.Screen
+      initialRouteName="StartupScreen">
+      <MyStackNavigator.Screen
         name="StartupScreen"
         component={StartupScreen}
         options={{headerShown: false}}
-      /> */}
+      />
       <MyStackNavigator.Screen
         name="TabNavigator"
         component={TabNavigator}
-        options={tabScreenOptions}
+        options={({route, navigation}) => ({
+          headerTitle: getHeaderTitle(route),
+          headerTitleStyle: {
+            fontSize: 28,
+            fontFamily: Global.fonts.BALSAMIQ_BOLD,
+            color: Colors.whiteTitle,
+          },
+          headerTitleAlign: 'center',
+          headerRight:
+            getHeaderTitle(route) === 'Bots'
+              ? (props) => (
+                  <TouchableOpacity
+                    onPress={() => {
+                      navigation.navigate('BotsNavigator', {
+                        screen: 'CreateBot',
+                        params: {},
+                      });
+                    }}>
+                    <Image
+                      source={require('../../assets/images/addIcon.png')}
+                      style={{
+                        height: 24,
+                        width: 24,
+                        marginRight: 13,
+                      }}
+                    />
+                  </TouchableOpacity>
+                )
+              : null,
+        })}
       />
       <MyStackNavigator.Screen
         name="ProfileNavigator"
@@ -44,7 +76,7 @@ const WalletNavigator = (props) => {
       <MyStackNavigator.Screen
         name="DiscoveryNavigator"
         component={DiscoveryNavigator}
-        options={{}}
+        options={{headerShown: false}}
       />
       <MyStackNavigator.Screen
         name="MarketNavigator"
@@ -54,7 +86,7 @@ const WalletNavigator = (props) => {
       <MyStackNavigator.Screen
         name="BotsNavigator"
         component={BotsNavigator}
-        options={{}}
+        options={{headerShown: false}}
       />
       <MyStackNavigator.Screen
         name="Auth"
@@ -64,5 +96,20 @@ const WalletNavigator = (props) => {
     </MyStackNavigator.Navigator>
   );
 };
+
+function getHeaderTitle(route) {
+  const routeName = getFocusedRouteNameFromRoute(route) ?? 'Profile';
+
+  switch (routeName) {
+    case 'Bots':
+      return 'Bots';
+    case 'Market':
+      return 'Market';
+    case 'Discovery':
+      return 'Discovery';
+    case 'Profile':
+      return 'Profile';
+  }
+}
 
 export default WalletNavigator;

@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import Colors from '../../constants/Colors';
 import * as Global from '../../Global';
@@ -16,6 +17,7 @@ import * as authActions from '../../store/actions/auth';
 import * as AuthAPI from '../../API/AuthAPI';
 import DefaultTextInput from '../../components/profileScreen/DefaultTextInput';
 import ButtonComponent from '../../components/ButtonComponent';
+import {CommonActions} from '@react-navigation/native';
 
 const LoginScreen = (props) => {
   const [login, setLogin] = useState();
@@ -29,12 +31,22 @@ const LoginScreen = (props) => {
     setLoginError(null);
     setIsLoading(true);
     try {
+      Keyboard.dismiss();
       let result = await AuthAPI.login(email, password);
       if (result.statusCode === 200) {
-        await dispatch(authActions.login(result.data.user, result.data.token));
+        await dispatch(
+          authActions.login(result.data.id, result.data.access_token),
+        );
+        props.navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{name: 'TabNavigator'}],
+          }),
+        );
       } else {
-        const errorId = result.data.errors?.[0];
-        let message = Constants.getErrorMessage(
+        console.log(result);
+        const errorId = result.data.message?.[0];
+        let message = Global.getErrorMessage(
           errorId,
           'SignInScreen/login',
           false,
@@ -49,9 +61,7 @@ const LoginScreen = (props) => {
 
   useEffect(() => {
     if (loginError) {
-      Alert.alert(translations.ERROR_OCCURED, loginError, [
-        {text: translations.OK},
-      ]);
+      Alert.alert('Somethin went wrong', loginError, [{text: 'OK'}]);
     }
   }, [loginError]);
 
@@ -69,7 +79,8 @@ const LoginScreen = (props) => {
           />
           <Text style={styles.titleText}>SIWallet</Text>
         </View>
-        <View style={{paddingHorizontal: 17}}>
+        <View style={{flex: 1}}></View>
+        <View style={{paddingHorizontal: 17, marginBottom: 20}}>
           <DefaultTextInput
             onChangeText={(text) => {
               setLogin(text);
@@ -87,6 +98,7 @@ const LoginScreen = (props) => {
             placeholder="PASSWORD"
             placeholderTextColor={Colors.placeholder}
             autoCapitalize={'none'}
+            secureTextEntry={true}
           />
           <View style={styles.checkBoxInfoContainer}>
             <TouchableOpacity
@@ -107,26 +119,33 @@ const LoginScreen = (props) => {
               <Text style={styles.forgotText}>Forgot password?</Text>
             </TouchableOpacity>
           </View>
-          <View style={styles.buttonsContainer}>
-            <ButtonComponent
-              title={'SIGN IN'}
-              onPress={() => {
-                signInHandler(login, password);
-              }}
-              buttonContainerStyle={{padding: 0, width: 155}}
-            />
-            <ButtonComponent
-              title={'SIGN UP'}
-              onPress={() => {
-                props.navigation.navigate('SignUp');
-                //signInHandler(login, password);
-              }}
-              buttonContainerStyle={{padding: 0, width: 155}}
-              buttonStyle={{
-                backgroundColor: Colors.grayBackground,
-              }}
-            />
-          </View>
+          {isLoading ? (
+            <View style={styles.activityIndicator}>
+              <ActivityIndicator size="large" color={Colors.greenMain} />
+            </View>
+          ) : (
+            <View style={styles.buttonsContainer}>
+              <ButtonComponent
+                title={'SIGN IN'}
+                onPress={() => {
+                  signInHandler(login, password);
+                }}
+                buttonContainerStyle={{padding: 0, width: 155}}
+              />
+              <ButtonComponent
+                title={'SIGN UP'}
+                onPress={() => {
+                  props.navigation.navigate('SignUp');
+                  //signInHandler(login, password);
+                }}
+                buttonContainerStyle={{padding: 0, width: 155}}
+                buttonStyle={{
+                  backgroundColor: Colors.grayBackground,
+                }}
+              />
+            </View>
+          )}
+
           <Text style={styles.orLoginText}>Or login with</Text>
           <View style={styles.socialMediaContainer}>
             <TouchableOpacity>
@@ -175,7 +194,7 @@ const styles = StyleSheet.create({
   walletIcon: {
     width: 87,
     height: 81,
-    marginBottom: 31,
+    marginBottom: 11,
     marginLeft: 6,
   },
   titleText: {
@@ -186,7 +205,7 @@ const styles = StyleSheet.create({
   headerContainer: {
     alignItems: 'center',
     marginTop: 58,
-    marginBottom: 121,
+    marginBottom: 41,
   },
   checkIcon: {
     width: 12,
@@ -238,6 +257,11 @@ const styles = StyleSheet.create({
   socialMediaContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+  },
+  activityIndicator: {
+    height: 99,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

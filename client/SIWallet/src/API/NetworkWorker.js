@@ -15,6 +15,7 @@ export async function postServerResponse(
   out = 30000,
   includeHeaders = true,
   contentType = 'application/json',
+  customHeaders = null,
 ) {
   let result = await serverResponse(
     url,
@@ -23,6 +24,7 @@ export async function postServerResponse(
     'POST',
     includeHeaders,
     contentType,
+    customHeaders,
   );
 
   return result;
@@ -34,6 +36,7 @@ export async function putServerResponse(
   out = 30000,
   includeHeaders = true,
   contentType = 'application/json',
+  customHeaders = null,
 ) {
   let result = await serverResponse(
     url,
@@ -42,6 +45,7 @@ export async function putServerResponse(
     'PUT',
     includeHeaders,
     contentType,
+    customHeaders,
   );
 
   return result;
@@ -53,6 +57,7 @@ export async function deleteServerResponse(
   out = 30000,
   includeHeaders = true,
   contentType = 'application/json',
+  customHeaders = null,
 ) {
   let result = await serverResponse(
     url,
@@ -61,6 +66,7 @@ export async function deleteServerResponse(
     'DELETE',
     includeHeaders,
     contentType,
+    customHeaders,
   );
 
   return result;
@@ -72,6 +78,7 @@ export async function getServerResponse(
   out = 30000,
   includeHeaders = true,
   contentType = 'application/json',
+  customHeaders = null,
 ) {
   let result = await serverResponse(
     url,
@@ -80,6 +87,7 @@ export async function getServerResponse(
     'GET',
     includeHeaders,
     contentType,
+    customHeaders,
   );
 
   return result;
@@ -92,6 +100,7 @@ async function serverResponse(
   type,
   includeHeaders,
   contentType,
+  customHeaders = null,
 ) {
   let result = {};
   let status = 0;
@@ -101,9 +110,11 @@ async function serverResponse(
     fetch(Constants.SERVER_ADDRESS + url, {
       method: type,
       headers: includeHeaders
-        ? {
-            'Content-Type': contentType,
-          }
+        ? customHeaders
+          ? customHeaders
+          : {
+              'Content-Type': contentType,
+            }
         : {},
       body: type == 'POST' || type == 'PUT' ? body : null,
     }),

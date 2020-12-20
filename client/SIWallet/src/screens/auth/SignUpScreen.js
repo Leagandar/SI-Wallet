@@ -7,39 +7,57 @@ import {
   TouchableOpacity,
   Keyboard,
   ScrollView,
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import Colors from '../../constants/Colors';
 import * as Global from '../../Global';
 import {useDispatch, useSelector} from 'react-redux';
+import * as authActions from '../../store/actions/auth';
+import * as AuthAPI from '../../API/AuthAPI';
 import DefaultTextInput from '../../components/profileScreen/DefaultTextInput';
 import ButtonComponent from '../../components/ButtonComponent';
+import {CommonActions} from '@react-navigation/native';
 
 const SignUpScreen = (props) => {
   const [login, setLogin] = useState();
   const [password, setPassword] = useState();
   const [repeatedPassword, setRepeatedPassword] = useState();
   const [email, setEmail] = useState();
-  const [phone, setPhone] = useState();
+  const [name, setName] = useState();
+  const [surname, setSurname] = useState();
   const [isCheckActive, setCheckActive] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [loginError, setLoginError] = useState();
+  const [registrationError, setRegistrationError] = useState();
   const dispatch = useDispatch();
 
-  const signUpHandler = async (email, password) => {
+  const signUpHandler = async (email, password, login, name, surname) => {
     if (password === repeatedPassword) {
       setRegistrationError(undefined);
       setIsLoading(true);
       try {
-        let result = await AuthAPI.signup(email, password);
+        Keyboard.dismiss();
+        let result = await AuthAPI.signup(
+          email,
+          password,
+          login,
+          name,
+          surname,
+        );
         if (result.statusCode === 200) {
           await dispatch(
-            authActions.signup(result.data.user, result.data.token),
+            authActions.signup(result.data.id, result.data.access_token),
           );
-          Keyboard.dismiss();
+          props.navigation.dispatch(
+            CommonActions.reset({
+              index: 1,
+              routes: [{name: 'TabNavigator'}],
+            }),
+          );
         } else {
           console.log(result);
-          const errorId = result.data.errors?.[0];
-          let message = Constants.getErrorMessage(
+          const errorId = result.data.message?.[0];
+          let message = Global.getErrorMessage(
             errorId,
             'SignUpScreen/signup',
             false,
@@ -74,7 +92,26 @@ const SignUpScreen = (props) => {
         />
         <Text style={styles.titleText}>SIWallet</Text>
       </View>
-      <View style={{paddingHorizontal: 17}}>
+      <View style={{flex: 1}}></View>
+      <View style={{paddingHorizontal: 17, marginBottom: 20}}>
+        <DefaultTextInput
+          onChangeText={(text) => {
+            setName(text);
+          }}
+          value={name}
+          placeholder="NAME"
+          placeholderTextColor={Colors.placeholder}
+          autoCapitalize={'none'}
+        />
+        <DefaultTextInput
+          onChangeText={(text) => {
+            setSurname(text);
+          }}
+          value={surname}
+          placeholder="SURNAME"
+          placeholderTextColor={Colors.placeholder}
+          autoCapitalize={'none'}
+        />
         <DefaultTextInput
           onChangeText={(text) => {
             setEmail(text);
@@ -101,6 +138,7 @@ const SignUpScreen = (props) => {
           placeholder="PASSWORD"
           placeholderTextColor={Colors.placeholder}
           autoCapitalize={'none'}
+          secureTextEntry={true}
         />
         <DefaultTextInput
           onChangeText={(text) => {
@@ -110,16 +148,9 @@ const SignUpScreen = (props) => {
           placeholder="CONFIRM PASSWORD"
           placeholderTextColor={Colors.placeholder}
           autoCapitalize={'none'}
+          secureTextEntry={true}
         />
-        <DefaultTextInput
-          onChangeText={(text) => {
-            setPhone(text);
-          }}
-          value={phone}
-          placeholder="PHONE"
-          placeholderTextColor={Colors.placeholder}
-          autoCapitalize={'none'}
-        />
+
         <View style={styles.checkBoxInfoContainer}>
           <TouchableOpacity
             style={styles.checkBox}
@@ -138,13 +169,19 @@ const SignUpScreen = (props) => {
             <Text style={styles.forgotText}> Terms of Service</Text>
           </TouchableOpacity>
         </View>
-        <ButtonComponent
-          title={'SIGN UP'}
-          onPress={() => {
-            //signInHandler(login, password);
-          }}
-          buttonContainerStyle={{padding: 0}}
-        />
+        {isLoading ? (
+          <View style={styles.activityIndicator}>
+            <ActivityIndicator size="large" color={Colors.greenMain} />
+          </View>
+        ) : (
+          <ButtonComponent
+            title={'SIGN UP'}
+            onPress={() => {
+              signUpHandler(email, password, login, name, surname);
+            }}
+            buttonContainerStyle={{padding: 0}}
+          />
+        )}
       </View>
     </ScrollView>
   );
@@ -158,7 +195,7 @@ const styles = StyleSheet.create({
   walletIcon: {
     width: 87,
     height: 81,
-    marginBottom: 31,
+    marginBottom: 11,
     marginLeft: 6,
   },
   titleText: {
@@ -168,8 +205,8 @@ const styles = StyleSheet.create({
   },
   headerContainer: {
     alignItems: 'center',
-    marginTop: 58,
-    marginBottom: 121,
+    marginTop: 30,
+    marginBottom: 11,
   },
   checkIcon: {
     width: 12,
@@ -201,6 +238,11 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: Global.fonts.BALSAMIQ_REGULAR,
     color: Colors.grayBlueText,
+  },
+  activityIndicator: {
+    height: 52,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
 

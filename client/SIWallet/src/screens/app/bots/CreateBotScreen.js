@@ -1,18 +1,178 @@
-import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {
+  Text,
+  View,
+  StyleSheet,
+  TouchableOpacity,
+  Image,
+  Switch,
+  TouchableWithoutFeedback,
+  Keyboard,
+  FlatList,
+  ScrollView,
+} from 'react-native';
+import Colors from '../../../constants/Colors';
+import * as Global from '../../../Global';
+import DefaultTextInput from '../../../components/profileScreen/DefaultTextInput';
+import ButtonComponent from '../../../components/ButtonComponent';
+import BOT_RATE_CARDS from '../../../data/botRateCards';
+import BotRateCard from '../../../components/botsScreen/BotRateCard';
 
 const CreateBotScreen = (props) => {
+  const [name, setName] = useState();
+  const [balance, setBalance] = useState();
+  const [description, setDescription] = useState();
+  const [renevalSwitch, setRenevalSwitch] = useState(false);
+  const [notificationsSwitch, setNotificationsSwitch] = useState(false);
+  const [activeRate, setActiveRate] = useState('MiniBot');
+
+  const toggleRenevalSwitch = (value) => {
+    setRenevalSwitch(value);
+  };
+
+  const toggleNotificationsSwitch = (value) => {
+    setNotificationsSwitch(value);
+  };
+
+  const renderItem = (item) => {
+    return (
+      <BotRateCard
+        item={item.item}
+        onCardPress={() => {}}
+        activeRate={activeRate}
+        setActiveRate={setActiveRate}
+      />
+    );
+  };
+  console.log('SS');
   return (
-    <View style={{justifyContent: 'center', alignItems: 'center'}}>
-      <Text>CreateBotScreen</Text>
-    </View>
+    <ScrollView style={styles.screen}>
+      <DefaultTextInput
+        onChangeText={(text) => {
+          setName(text);
+        }}
+        value={name}
+        placeholder="NAME"
+        placeholderTextColor={Colors.placeholder}
+        autoCapitalize={'none'}
+      />
+      <FlatList
+        showsHorizontalScrollIndicator={false}
+        horizontal={true}
+        style={styles.flatList}
+        data={BOT_RATE_CARDS}
+        keyExtractor={(item) => item.id}
+        renderItem={renderItem}
+      />
+
+      <DefaultTextInput
+        onChangeText={(text) => {
+          setBalance(text);
+        }}
+        value={balance}
+        placeholder="BALANCE"
+        placeholderTextColor={Colors.placeholder}
+        autoCapitalize={'none'}
+        keyboardType="numeric"
+      />
+      <DefaultTextInput
+        onChangeText={(text) => {
+          setDescription(text);
+        }}
+        value={description}
+        placeholder="DESCRIPTION"
+        placeholderTextColor={Colors.placeholder}
+        autoCapitalize={'none'}
+      />
+      <View style={{flexDirection: 'row'}}>
+        <Text style={styles.flagTitle}>Auto-renewal</Text>
+        <View style={{flex: 1}}></View>
+
+        <View style={{alignItems: 'flex-end'}}>
+          <Switch
+            trackColor={{
+              false: Colors.switchInActiveColor,
+              true: Colors.greenMain,
+            }}
+            thumbColor={renevalSwitch ? Colors.white : Colors.white}
+            ios_backgroundColor="#3e3e3e"
+            onValueChange={toggleRenevalSwitch}
+            value={renevalSwitch}
+            style={styles.switch}
+          />
+        </View>
+      </View>
+      <View style={{flexDirection: 'row'}}>
+        <Text style={styles.flagTitle}>Notifications</Text>
+        <View style={{flex: 1}}></View>
+
+        <Switch
+          trackColor={{
+            false: Colors.switchInActiveColor,
+            true: Colors.greenMain,
+          }}
+          thumbColor={renevalSwitch ? Colors.white : Colors.white}
+          ios_backgroundColor="#3e3e3e"
+          onValueChange={toggleNotificationsSwitch}
+          value={notificationsSwitch}
+          style={styles.switch}
+        />
+      </View>
+      <ButtonComponent
+        title="Create Bot"
+        buttonContainerStyle={{padding: 0, marginBottom: 40, marginTop: 10}}
+      />
+    </ScrollView>
   );
 };
 
-export const screenOptions = {
-  headerTitle: 'New Bot',
+export const screenOptions = (navData) => {
+  return {
+    headerTitle: 'New Bot',
+    headerTitleStyle: {
+      fontSize: 28,
+      fontFamily: Global.fonts.BALSAMIQ_BOLD,
+      color: Colors.whiteTitle,
+    },
+    headerTitleAlign: 'center',
+    headerLeft: (props) => (
+      <TouchableOpacity
+        onPress={() => {
+          navData.navigation.goBack();
+        }}>
+        <Image
+          source={require('../../../assets/images/backIcon.png')}
+          style={{height: 24, width: 24, marginLeft: 14}}
+        />
+      </TouchableOpacity>
+    ),
+  };
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  switch: {
+    transform: [{scaleX: 1.8}, {scaleY: 1.6}],
+    marginBottom: 10,
+    marginRight: 14,
+    marginTop: 9,
+  },
+  flagTitle: {
+    fontSize: 26,
+    fontFamily: Global.fonts.BALSAMIQ_BOLD,
+    color: Colors.whiteTitle,
+    paddingBottom: 10,
+  },
+  screen: {
+    flex: 1,
+    backgroundColor: Colors.blackBackground,
+    paddingVertical: 25,
+    paddingHorizontal: 17,
+  },
+  flatList: {
+    flex: 1,
+    marginBottom: 20,
+    marginTop: 10,
+  },
+});
 
 export default CreateBotScreen;

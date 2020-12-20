@@ -4,35 +4,21 @@ import LinearGradient from 'react-native-linear-gradient';
 import Colors from '../../constants/Colors';
 import * as Global from '../../Global';
 
-const CurrencyList = (props) => {
-  console.log('props');
-  console.log(props);
-  const currencies = props.currencies.map((currency, index) => {
+const CoinsList = (props) => {
+  const renderCoin = ({item}) => {
     return (
-      <TouchableOpacity id={currency.currency + Math.random()}>
+      <TouchableOpacity>
         <View style={styles.menuSection}>
-          {/* <Image style={styles.menuItemImage} source={currency.image} /> */}
+          <Image style={styles.menuItemImage} source={item.image} />
           <View>
-            <View style={{flexDirection: 'row'}}>
-              <Text style={styles.menuItemTitle} numberOfLines={1}>
-                {currency.title}
-              </Text>
-              {/* <Text style={styles.profitTitle}>{currency.profit + '%'}</Text> */}
-            </View>
-            <Text style={styles.currencyAdress}>
-              {currency.balances[0].address}
+            <Text style={styles.menuItemTitle} numberOfLines={1}>
+              {item.title}
             </Text>
+            <Text style={styles.currencyAdress}>{item.change}</Text>
           </View>
 
           <View style={{flex: 1, alignItems: 'flex-end'}}>
-            <View>
-              <Text style={styles.currencyAmount}>
-                {currency.available_balance}
-              </Text>
-              <Text style={styles.currencyPrice}>
-                {'$' + currency.price_usd}
-              </Text>
-            </View>
+            <Text style={styles.currencyAmount}>{currency.price}</Text>
           </View>
         </View>
         {index != props.currencies.length - 1 && (
@@ -40,16 +26,15 @@ const CurrencyList = (props) => {
         )}
       </TouchableOpacity>
     );
-  });
+  };
   return (
-    <LinearGradient
-      style={{
-        ...styles.card,
-        ...props.cardStyle,
-      }}
-      colors={Colors.cardInfoGradient}>
-      <View style={styles.list}>{currencies}</View>
-    </LinearGradient>
+    <FlatList
+      showsVerticalScrollIndicator={false}
+      style={props.listStyle}
+      data={props.coins}
+      keyExtractor={(item) => item.id}
+      renderItem={renderCoin}
+    />
   );
 };
 
@@ -107,10 +92,10 @@ const styles = StyleSheet.create({
     fontFamily: Global.fonts.BALSAMIQ_BOLD,
   },
   separator: {
-    borderColor: Colors.blackStroke,
+    borderColor: Colors.coinOutlineStroke,
     borderWidth: 0.7,
     width: '100%',
   },
 });
 
-export default CurrencyList;
+export default CoinsList;

@@ -17,5 +17,10 @@ export default {
   cardInfoGradient: ['#283246', '#4B566D'],
   grayBlueText: '#97A5BF',
   adressGray: '#B2B5BA',
-  blackStroke: '#283349'
+  blackStroke: '#283349',
+  listHeaderTitle: '#FCFCFC',
+  newsTitle: '#D6D7DB',
+  switchInActiveColor: '#434D62',
+  descriptionText: '#CDD1DA',
+  coinOutlineStroke: '#46526C'
 };

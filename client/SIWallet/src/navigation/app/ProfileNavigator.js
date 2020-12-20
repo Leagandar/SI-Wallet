@@ -13,6 +13,12 @@ import WalletScreen, {
 import EnterUserInfoScreen, {
   screenOptions as enterUserInfoScreenOptions,
 } from '../../screens/app/profile/EnterUserInfoScreen';
+import TransactionScreen, {
+  screenOptions as transactionScreenOptions,
+} from '../../screens/app/profile/TransactionScreen';
+import CoinsScreen, {
+  screenOptions as coinsScreenOptions,
+} from '../../screens/app/profile/CoinsScreen';
 
 const MyStackNavigator = createStackNavigator();
 
@@ -50,6 +56,16 @@ const ProfileNavigator = (props) => {
         name="Wallet"
         component={WalletScreen}
         options={walletScreenOptions}
+      />
+      <MyStackNavigator.Screen
+        name="Transactions"
+        component={TransactionScreen}
+        options={transactionScreenOptions}
+      />
+      <MyStackNavigator.Screen
+        name="Coins"
+        component={CoinsScreen}
+        options={coinsScreenOptions}
       />
     </MyStackNavigator.Navigator>
   );

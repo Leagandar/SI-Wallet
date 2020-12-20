@@ -41,10 +41,26 @@ export async function editUserInfo(
   return resData;
 }
 
-export async function getUsersInfo(userId, token, userIds, language) {
+export async function getUserInfo(token) {
   let result = [];
-  result = await NetworkWorker.postServerResponse(
-    `/user/profiles`,
+  result = await NetworkWorker.getServerResponse(
+    `/api/v1/user`,
+    null,
+    30000,
+    true,
+    'application/json',
+    {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
+  );
+  return result;
+}
+
+export async function getWalletInfo(userId, token) {
+  let result = [];
+  result = await NetworkWorker.getServerResponse(
+    `/api/v1/blockchain/allbalance`,
     JSON.stringify({
       token: token,
       user: userId,

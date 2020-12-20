@@ -1,18 +1,190 @@
-import React from 'react';
-import {Text, View, StyleSheet} from 'react-native';
+import React, {useState, useEffect, useCallback} from 'react';
+import {
+  Text,
+  View,
+  StyleSheet,
+  FlatList,
+  TouchableOpacity,
+  Image,
+} from 'react-native';
+import Colors from '../../../constants/Colors';
+import * as Global from '../../../Global';
+import LoadingScreen from '../../../components/LoadingScreen';
+import ErrorScreen from '../../../components/ErrorScreen';
+import ContentList from '../../../components/ContentList';
+import {useDispatch, useSelector} from 'react-redux';
+import * as NewsAPI from '../../../API/NewsAPI';
+import NewsCard from '../../../components/discoveryScreen/NewsCard';
 
 const DiscoveryScreen = (props) => {
-  return (
-    <View style={{justifyContent: 'center', alignItems: 'center'}}>
-      <Text>DiscoveryScreen</Text>
-    </View>
+  let {userId, token, user} = useSelector((state) => state.auth);
+  const [contentCards, setContentCards] = useState();
+  const [news, setNews] = useState([]);
+  const [newsLoading, setNewsLoading] = useState(false);
+  const [loadingError, setLoadingError] = useState(undefined);
+  const dispatch = useDispatch();
+  let CardsContent = View;
+
+  const getNews = useCallback(
+    async (token) => {
+      console.log('GET NEWS\n\n');
+      setNewsLoading(true);
+      setLoadingError(undefined);
+      try {
+        let result = await NewsAPI.getNews(token);
+        if (result.statusCode === 200) {
+          console.log(result);
+
+          setNews(result.data);
+          setContentCards(result.data);
+        } else {
+          console.log(result);
+          const errorId = result.data.errors?.[0];
+          let message = Global.getErrorMessage(
+            errorId,
+            'DiscoveryScreen/getNews',
+            false,
+          );
+          throw new Error(message);
+        }
+      } catch (err) {
+        setLoadingError(err.message);
+        console.log('loading news ->> ' + err.message);
+      }
+      setNewsLoading(false);
+    },
+    [dispatch],
   );
+
+  useEffect(() => {
+    getNews(token);
+  }, []);
+
+  if (!userId && !token) {
+    CardsContent = ErrorScreen;
+  } else {
+    CardsContent = ContentList;
+    if (loadingError) {
+      CardsContent = ErrorScreen;
+    } else if (newsLoading) {
+      CardsContent = LoadingScreen;
+    }
+  }
+
+  const renderNewsCard = (item, index) => {
+    return (
+      <NewsCard
+        id={item.item.id}
+        news={item.item}
+        onCardPress={() => {
+          props.navigation.navigate('DiscoveryNavigator', {
+            screen: 'NewsInfo',
+            params: {
+              newsItem: item.item,
+              title: item.item.title,
+            },
+          });
+        }}
+      />
+    );
+  };
+
+  const renderEventItem = (item, index) => {
+    return (
+      <View id={item.item.title + Math.random()}>
+        <TouchableOpacity
+          event={item.item}
+          onPress={() => {
+            props.navigation.navigate('DiscoveryNavigator', {
+              screen: 'NewsInfo',
+              params: {
+                newsItem: item.item,
+                title: item.item.title,
+              },
+            });
+          }}
+          style={{borderRadius: 12, marginRight: 16, marginBottom: 10}}>
+          <Image
+            source={{uri: item.item.originalImageUrl}}
+            style={{width: 300, height: 175, borderRadius: 12}}
+          />
+        </TouchableOpacity>
+        <Text style={styles.eventTitle} numberOfLines={1}>{item.item.title}</Text>
+      </View>
+    );
+  };
+
+  console.log('FINALOCHAKA');
+  console.log(newsLoading, loadingError);
+  if (loadingError) {
+    console.log('LOADING ERROR');
+    return (
+      <ErrorScreen
+        isAction={true}
+        errorText="An error occured while loading news, try again"
+        onErrorPress={() => {
+          getNews(token);
+        }}
+      />
+    );
+  } else if (newsLoading || !contentCards) {
+    console.log('LOADING SCREEN');
+    return <LoadingScreen />;
+  } else {
+    // console.log('NORM TEMA');
+    // console.log(contentCards);
+    return (
+      <View style={{flex: 1, backgroundColor: Colors.blackBackground}}>
+        <CardsContent
+          data={contentCards?.latest}
+          renderItem={renderNewsCard}
+          listStyle={styles.flatList}
+          isAction={true}
+          errorText={'An error occured while getting news, try again'}
+          onErrorPress={() => {
+            getNews(token);
+          }}
+          header={() => (
+            <View>
+              <Text style={styles.listHeader}>Top Events</Text>
+              <FlatList
+                showsHorizontalScrollIndicator={false}
+                style={props.listStyle}
+                data={contentCards?.top}
+                keyExtractor={(item) => item.id}
+                renderItem={renderEventItem}
+                horizontal={true}
+              />
+              <Text style={styles.listHeader}>News</Text>
+            </View>
+          )}
+        />
+      </View>
+    );
+  }
 };
 
 export const screenOptions = {
   headerTitle: 'Discovery',
 };
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  listHeader: {
+    color: Colors.listHeaderTitle,
+    fontSize: 25,
+    fontFamily: Global.fonts.BALSAMIQ_BOLD,
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  eventTitle: {
+    color: Colors.adressGray,
+    fontSize: 16,
+    fontFamily: Global.fonts.BALSAMIQ_BOLD,
+    width: 270
+  },
+  flatList: {
+    paddingHorizontal: 19,
+  },
+});
 
 export default DiscoveryScreen;

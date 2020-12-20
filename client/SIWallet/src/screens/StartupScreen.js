@@ -20,7 +20,7 @@ const StartupScreen = (props) => {
           props.navigation.dispatch(
             CommonActions.reset({
               index: 1,
-              routes: [{name: 'TabNavigator'}],
+              routes: [{name: 'Auth'}],
             }),
           );
 
@@ -29,31 +29,22 @@ const StartupScreen = (props) => {
         const transformedData = JSON.parse(userData);
         const {token, userId} = transformedData;
 
-        result = await AuthApi.checkSession(userId, token);
+        result = await AuthApi.checkSession(token);
 
         if (!result) {
+          console.log('result error', result);
           throw new Error('Something went wrong');
         }
         if (result.statusCode === 200) {
-          if (result.data.status !== 4) {
-            props.navigation.dispatch(
-              CommonActions.reset({
-                index: 1,
-                routes: [{name: 'TabNavigator'}],
-              }),
-            );
-          } else {
-            dispatch(
-              authActions.authenticate(userId, token, result.data.status),
-            );
+          console.log('result', result);
+          dispatch(authActions.authenticate(userId, token));
 
-            props.navigation.dispatch(
-              CommonActions.reset({
-                index: 1,
-                routes: [{name: 'TabNavigator'}],
-              }),
-            );
-          }
+          props.navigation.dispatch(
+            CommonActions.reset({
+              index: 1,
+              routes: [{name: 'TabNavigator'}],
+            }),
+          );
         } else {
           const errorId = result.data.errors?.[0];
           let message = Constants.getErrorMessage(
@@ -67,7 +58,7 @@ const StartupScreen = (props) => {
         props.navigation.dispatch(
           CommonActions.reset({
             index: 1,
-            routes: [{name: 'TabNavigator'}],
+            routes: [{name: 'Auth'}],
           }),
         );
       }
@@ -84,7 +75,7 @@ const StartupScreen = (props) => {
         justifyContent: 'center',
         backgroundColor: Colors.blackBackground,
       }}>
-      <ActivityIndicator size="large" color={Colors.white} />
+      <ActivityIndicator size="large" color={Colors.greenMain} />
     </View>
   );
 };
