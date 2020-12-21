@@ -17,7 +17,10 @@ import { join } from 'path';
       isGlobal: true,
     }),
     ServeStaticModule.forRoot({
-      serveRoot: join(__dirname, '..', 'public'),
+      rootPath: join(__dirname, '..', 'public'),
+      serveStaticOptions: {
+        redirect: false
+      }
     }),
     BlockchainModule,
   ]

@@ -7,20 +7,23 @@ import { Response } from 'express'
 @Controller('user')
 export class UserController {
   constructor(private UserService: UserService) { }
-  
+
   @UseGuards(JwtAuthGuard)
   @Post('update')
   async update(@Request() request, @Body() userDTO: FullNameDto, @Res() res: Response) {
-    await this.UserService.updateFullname(request.user.userId, userDTO).catch((err: Error) => {
+    const result = await this.UserService.updateFullname(request.user.userId, userDTO).catch((err: Error) => {
       res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: [err.message] })
-    });
-    res.status(HttpStatus.OK).json({ statusCode: 200, message: "Success" });
+    })
+    res.status(HttpStatus.OK).json(result);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get()
-  async getAll(@Request() request): Promise<any> {
+  async getAll(@Request() request, @Res() res: Response): Promise<any> {
     Logger.log("USER", JSON.stringify(request.user));
-    return await this.UserService.findOneById(request.user.userId);
+    const result = await this.UserService.findOneById(request.user.userId).catch((err: Error) => {
+      res.status(HttpStatus.INTERNAL_SERVER_ERROR).json({ message: [err.message] })
+    })
+    res.status(HttpStatus.OK).json(result);
   }
 }

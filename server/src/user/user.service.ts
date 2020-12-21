@@ -25,26 +25,29 @@ export class UserService {
     let newUser = await this.userRepository.create<User>(object);
     newUser.password = undefined;
     await this.blockchain.createAddress(newUser.username).catch((err: Error) => { throw err })
-    let balance = await this.blockchain.getAdresses(newUser.username).catch((err: Error) => { throw err })
-    let allBalance = 0;
-    await Promise.all(balance.map((one: any) => {
-      allBalance += parseFloat(one.available_balance);
-      return one.available_balance
-    })).catch((err: Error) => { throw err })
+    // let balance = await this.blockchain.getAdresses(newUser.username).catch((err: Error) => { throw err })
+    // let allBalance = 0;
+    // await Promise.all(balance.map((one: any) => {
+    //   allBalance += parseFloat(one.available_balance);
+    //   return one.available_balance
+    // })).catch((err: Error) => { throw err })
     return {
       ...newUser.toJSON(),
-      balance: balance,
-      totalBalance: allBalance
+      //balance: balance,
+      //totalBalance: allBalance
     }
   }
 
   async updateFullname(id: number, user: FullNameDto) {
-    return await this.userRepository.update(user, {
+    await this.userRepository.update(user, {
       where: {
         id: id
       }
     }).catch((err: Error) => { throw err })
+    return await this.findOneById(id).catch((err: Error) => { throw err })
   }
+  
+
 
   async validate(user: LoginFormDto): Promise<any> {
     let UserData = await this.userRepository.findOne<User>({
@@ -55,16 +58,16 @@ export class UserService {
       attributes: { exclude: ['password'] }
     });
     if (!UserData) return null;
-    let balance = await this.blockchain.getAdresses(UserData.username).catch((err: Error) => { throw err })
-    let allBalance = 0;
-    await Promise.all(balance.map((one: any) => {
-      allBalance += parseFloat(one.available_balance);
-      return one.available_balance
-    }))
+    //let balance = await this.blockchain.getAdresses(UserData.username).catch((err: Error) => { throw err })
+    // let allBalance = 0;
+    // await Promise.all(balance.map((one: any) => {
+    //   allBalance += parseFloat(one.available_balance);
+    //   return one.available_balance
+    // }))
     return {
       ...UserData.toJSON(),
-      balance: balance,
-      totalBalance: allBalance
+      //balance: balance,
+      //totalBalance: allBalance
     }
   }
 
