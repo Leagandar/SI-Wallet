@@ -40,6 +40,15 @@ export const setUserInfo = (data) => {
   };
 };
 
+export const setUserBalance = (balance) => {
+  return async (dispatch) => {
+    dispatch({
+      type: SET_USER_BALANCE,
+      balance: balance,
+    });
+  };
+};
+
 export const setWalletInfo = (data) => {
   return async (dispatch) => {
     dispatch({

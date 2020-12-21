@@ -81,7 +81,7 @@ const WalletNavigator = (props) => {
       <MyStackNavigator.Screen
         name="MarketNavigator"
         component={MarketNavigator}
-        options={{}}
+        options={{headerShown: false}}
       />
       <MyStackNavigator.Screen
         name="BotsNavigator"

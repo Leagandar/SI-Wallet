@@ -3,7 +3,9 @@ import {
   LOGOUT,
   EDIT_USER_INFO,
   SET_USER_INFO,
-  SET_WALLET_INFO
+  SET_WALLET_INFO,
+  SET_USER_FULL_NAME,
+  SET_USER_BALANCE,
 } from '../actions/auth';
 
 const initialState = {
@@ -68,6 +70,16 @@ export default (state = initialState, action) => {
         },
       };
     case SET_WALLET_INFO:
+      return {
+        ...state,
+        wallet: action.wallet,
+      };
+    case SET_USER_FULL_NAME:
+      return {
+        ...state,
+        user: {...state.user, name: action.name, surname: action.surname},
+      };
+    case SET_USER_BALANCE:
       return {
         ...state,
         wallet: action.wallet,

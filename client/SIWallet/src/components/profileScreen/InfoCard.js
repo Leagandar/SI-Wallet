@@ -72,7 +72,7 @@ const styles = StyleSheet.create({
     fontSize: 15,
     fontFamily: Global.fonts.BALSAMIQ_BOLD,
     marginRight: 30,
-    width: 98,
+    width: 130,
   },
   menuItemValue: {
     color: Colors.whiteText,

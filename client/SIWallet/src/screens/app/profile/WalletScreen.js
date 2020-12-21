@@ -3,12 +3,13 @@ import {Text, View, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import Colors from '../../../constants/Colors';
 import * as Global from '../../../Global';
 import BalanceInfoCard from '../../../components/profileScreen/BalanceInfoCard';
-import CurrencyList from '../../../components/profileScreen/CurrencyList';
+import CurrencyListWallet from '../../../components/profileScreen/CurrencyListWallet';
 import * as WalletAPI from '../../../API/WalletAPI';
 import {useSelector, useDispatch} from 'react-redux';
 import * as authActions from '../../../store/actions/auth';
 import LoadingScreen from '../../../components/LoadingScreen';
 import ErrorScreen from '../../../components/ErrorScreen';
+import CurrencyCard from '../../../components/profileScreen/CurrencyCard';
 
 const WalletScreen = (props) => {
   let {token, userId, wallet} = useSelector((state) => state.auth);
@@ -16,36 +17,50 @@ const WalletScreen = (props) => {
   const [loadingError, setLoadingError] = useState();
   const dispatch = useDispatch();
 
-  const loadWalletInfo = useCallback(async (token) => {
-    let result;
-    setIsLoading(true);
-    setLoadingError(undefined);
+  const loadWalletInfo = useCallback(
+    async (token) => {
+      let result;
+      setIsLoading(true);
+      setLoadingError(undefined);
 
-    try {
-      result = await WalletAPI.getWalletInfo(token);
-      if (result.statusCode === 200) {
-        dispatch(authActions.setWalletInfo(result.data));
-      } else {
-        console.log(result);
-        const errorId = result.data.errors?.[0];
-        let message = Global.getErrorMessage(
-          errorId,
-          'ProfileScreen/getUserInfo',
-          false,
-        );
-        throw new Error(message);
+      try {
+        result = await WalletAPI.getWalletInfo(token);
+        if (result.statusCode === 200) {
+          console.log(result);
+          dispatch(authActions.setWalletInfo(result.data));
+        } else {
+          console.log(result);
+          const errorId = result.data.errors?.[0];
+          let message = Global.getErrorMessage(
+            errorId,
+            'ProfileScreen/getUserInfo',
+            false,
+          );
+          throw new Error(message);
+        }
+      } catch (err) {
+        setLoadingError(err.message);
+        console.log('error while getting user info -->' + err.message);
+        setIsLoading(false);
       }
-    } catch (err) {
-      setLoadingError(err.message);
-      console.log('error while getting user info -->' + err.message);
       setIsLoading(false);
-    }
-    setIsLoading(false);
-  }, []);
+    },
+    [userId, token],
+  );
 
   useEffect(() => {
     loadWalletInfo(token);
   }, [userId, token]);
+
+  const renderCurrencyCard = ({item, index}) => {
+    return (
+      <CurrencyCard
+        currency={item}
+        isActive={false}
+        isLast={index === wallet.length - 1 ? true : false}
+      />
+    );
+  };
 
   if (loadingError) {
     return (
@@ -53,7 +68,7 @@ const WalletScreen = (props) => {
         isAction={true}
         errorText="An error occured while loading wallet info, try again"
         onErrorPress={() => {
-          loadUserinfo(token);
+          loadWalletInfo(token);
         }}
       />
     );
@@ -63,11 +78,9 @@ const WalletScreen = (props) => {
     return (
       <View style={{flex: 1, backgroundColor: Colors.blackBackground}}>
         <BalanceInfoCard
-          onSendPress={() => {}}
-          onReceivePress={() => {}}
-          dayChangePercent="+8.1"
-          dayChange="243"
-          balance="12.679,13"
+          dayChangePercent="+0"
+          dayChange="0"
+          balance={wallet[0]?.totalBalance}
           cardStyle={{marginTop: 20, marginBottom: 24}}
           onSendPress={() => {
             props.navigation.navigate('Coins', {
@@ -81,8 +94,14 @@ const WalletScreen = (props) => {
               type: 'receive',
             });
           }}
+          isButtonsActive={true}
+          firstTitle="PORTFOLIO VALUE"
+          secondTitle="24H CHANGE"
         />
-        <CurrencyList currencies={wallet} />
+        <CurrencyListWallet
+          currencies={wallet}
+          renderCurrencyItem={renderCurrencyCard}
+        />
       </View>
     );
   }

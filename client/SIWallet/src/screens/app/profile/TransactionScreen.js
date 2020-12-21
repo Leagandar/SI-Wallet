@@ -8,6 +8,7 @@ import {
   TouchableWithoutFeedback,
   Keyboard,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import Colors from '../../../constants/Colors';
 import * as Global from '../../../Global';
@@ -16,6 +17,8 @@ import ButtonComponent from '../../../components/ButtonComponent';
 import * as WalletAPI from '../../../API/WalletAPI';
 import {useSelector, useDispatch} from 'react-redux';
 import Clipboard from '@react-native-community/clipboard';
+import {CommonActions} from '@react-navigation/native';
+import * as authActions from '../../../store/actions/auth';
 
 const TransactionScreen = (props) => {
   let {token, userId} = useSelector((state) => state.auth);
@@ -27,7 +30,7 @@ const TransactionScreen = (props) => {
   const dispatch = useDispatch();
   let type = props.route.params.type;
   let currency = props.route.params.currency;
-  console.log(currency);
+  //console.log(currency);
 
   const sendTransactionHandler = async (token, amount, address, currency) => {
     setTransactionError(undefined);
@@ -38,10 +41,21 @@ const TransactionScreen = (props) => {
         token,
         amount,
         address,
-        currency.curency.toLowerCase(),
-        currency.balances[0].address,
+        currency.main_data.data.slug.toLowerCase(),
       );
-      if (result.statusCode === 200) {
+      if (result.statusCode === 401) {
+        props.navigation.dispatch(
+          CommonActions.reset({
+            index: 1,
+            routes: [{name: 'Auth'}],
+          }),
+        );
+      } else if (result.statusCode === 200) {
+        console.log(result);
+        dispatch(authActions.setWalletInfo(result.data));
+        Alert.alert('Withdraw', 'Successful withdrawal of funds', [
+          {text: 'OK'},
+        ]);
         console.log(result);
       } else {
         console.log(result);
@@ -61,7 +75,7 @@ const TransactionScreen = (props) => {
 
   useEffect(() => {
     if (transactionError) {
-      Alert.alert('Error occured', transactionError, [{text: 'OK'}]);
+      Alert.alert('Withdraw', transactionError, [{text: 'OK'}]);
     }
   }, [transactionError]);
 
@@ -71,13 +85,7 @@ const TransactionScreen = (props) => {
         onPress={() => {
           Keyboard.dismiss();
         }}>
-        <View
-          style={{
-            flex: 1,
-            backgroundColor: Colors.blackBackground,
-            paddingHorizontal: 17,
-            paddingVertical: 20,
-          }}>
+        <View style={styles.screen}>
           <DefaultTextInput
             onChangeText={(text) => {
               setAddress(text);
@@ -108,13 +116,21 @@ const TransactionScreen = (props) => {
             placeholderTextColor={Colors.placeholder}
             autoCapitalize={'none'}
           />
-          <ButtonComponent
-            title="SEND"
-            buttonContainerStyle={{padding: 0}}
-            onPress={() => {
-              sendTransactionHandler(token, amount, address, currency);
-            }}
-          />
+          {isLoading ? (
+            <View style={styles.activityIndicator}>
+              <ActivityIndicator size="large" color={Colors.greenMain} />
+            </View>
+          ) : (
+            <View style={styles.buttonsContainer}>
+              <ButtonComponent
+                title="SEND"
+                buttonContainerStyle={{padding: 0}}
+                onPress={() => {
+                  sendTransactionHandler(token, amount, address, currency);
+                }}
+              />
+            </View>
+          )}
         </View>
       </TouchableWithoutFeedback>
     );
@@ -163,6 +179,12 @@ export const screenOptions = (navData) => {
 };
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: Colors.blackBackground,
+    paddingHorizontal: 17,
+    paddingVertical: 20,
+  },
   optionalText: {
     fontSize: 26,
     fontFamily: Global.fonts.BALSAMIQ_BOLD,
@@ -178,8 +200,7 @@ const styles = StyleSheet.create({
   adressText: {
     fontSize: 16,
     fontFamily: Global.fonts.BALSAMIQ_REGULAR,
-    color: '#72757C',
-    
+    color: Colors.greenMain,
   },
 });
 

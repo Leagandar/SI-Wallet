@@ -1,78 +1,38 @@
 import React, {useState} from 'react';
-import {
-  Text,
-  View,
-  StyleSheet,
-  TouchableOpacity,
-  Image,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from 'react-native';
+import {Text, View, StyleSheet, TouchableOpacity, Image} from 'react-native';
 import Colors from '../../../constants/Colors';
 import * as Global from '../../../Global';
-import CurrencyList from '../../../components/profileScreen/CurrencyList';
-import LinearGradient from 'react-native-linear-gradient';
+import CurrencyListWallet from '../../../components/profileScreen/CurrencyListWallet';
+import CurrencyCard from '../../../components/profileScreen/CurrencyCard';
+import {useSelector, useDispatch} from 'react-redux';
 
 const CoinsScreen = (props) => {
-  const [address, setAddress] = useState();
-  const [amount, setAmount] = useState();
-  const [memo, setMemo] = useState();
-  const wallet = props.route.params.wallet;
+  let {wallet} = useSelector((state) => state.auth);
   const type = props.route.params.type;
-  console.log(type)
+  console.log(type);
 
-  const currencies = wallet.map((currency, index) => {
+  const renderCurrencyCard = ({item, index}) => {
     return (
-      <TouchableOpacity
-        onPress={() => {
+      <CurrencyCard
+        currency={item}
+        isActive={true}
+        isLast={index === wallet.length - 1 ? true : false}
+        onCurrencyPress={() => {
           props.navigation.navigate('Transactions', {
-            currency: currency,
+            currency: item,
             type: type,
           });
         }}
-        id={currency.currency + Math.random()}>
-        <View style={styles.menuSection}>
-          {/* <Image style={styles.menuItemImage} source={currency.image} /> */}
-          <View>
-            <View style={{flexDirection: 'row'}}>
-              <Text style={styles.menuItemTitle} numberOfLines={1}>
-                {currency.title}
-              </Text>
-              {/* <Text style={styles.profitTitle}>{currency.profit + '%'}</Text> */}
-            </View>
-            <Text style={styles.currencyAdress}>
-              {currency.balances[0].address}
-            </Text>
-          </View>
-
-          <View style={{flex: 1, alignItems: 'flex-end'}}>
-            <View>
-              <Text style={styles.currencyAmount}>
-                {currency.available_balance}
-              </Text>
-              <Text style={styles.currencyPrice}>
-                {'$' + currency.price_usd}
-              </Text>
-            </View>
-          </View>
-        </View>
-        {index != wallet.length - 1 && (
-          <View style={styles.separator}></View>
-        )}
-      </TouchableOpacity>
+      />
     );
-  });
+  };
 
   return (
-    <View style={{flex: 1, backgroundColor: Colors.blackBackground}}>
-      <LinearGradient
-        style={{
-          ...styles.card,
-          ...props.cardStyle,
-        }}
-        colors={Colors.cardInfoGradient}>
-        <View style={styles.list}>{currencies}</View>
-      </LinearGradient>
+    <View style={{flex: 1, backgroundColor: Colors.blackBackground, paddingVertical: 20}}>
+      <CurrencyListWallet
+        currencies={wallet}
+        renderCurrencyItem={renderCurrencyCard}
+      />
     </View>
   );
 };
@@ -80,7 +40,7 @@ const CoinsScreen = (props) => {
 export const screenOptions = (navData) => {
   let type = navData.route.params.type;
   return {
-    headerTitle: type ? 'send' : 'receive',
+    headerTitle: type ? 'Send' : 'Receive',
     headerTitleStyle: {
       fontSize: 28,
       fontFamily: Global.fonts.BALSAMIQ_BOLD,

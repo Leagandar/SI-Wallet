@@ -35,6 +35,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     borderRadius: 8,
     marginBottom: 16,
+    paddingHorizontal: 19,
+
   },
   titleText: {
     fontFamily: Global.fonts.BALSAMIQ_BOLD,

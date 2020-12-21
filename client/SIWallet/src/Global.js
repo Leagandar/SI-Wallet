@@ -7,7 +7,8 @@ export const fonts = {
 
 let TOKEN = '';
 
-export const SERVER_ADDRESS = 'http://5d207144e415.ngrok.io';
+export const SERVER_ADDRESS = 'http://17e330d6be69.ngrok.io';
+export const IMAGES_REPO = '/assets/';
 
 export function getToken() {
   return TOKEN;
@@ -28,6 +29,12 @@ export function getErrorMessage(errorId, source, details = true) {
       break;
     case 'Wrong login or password':
       message = 'Wrong email or password';
+      break;
+    case 'You cannot withdraw more than you have, sorry)':
+      message = 'Insufficient balance';
+      break;
+    case 'Request failed with status code 429':
+      message = 'Too many attempts, try later';
       break;
     default:
       message = 'Something went wrong';

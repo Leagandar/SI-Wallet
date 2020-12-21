@@ -34,16 +34,17 @@ const CreateBotScreen = (props) => {
     setNotificationsSwitch(value);
   };
 
-  const renderItem = (item) => {
+  const renderItem = ({item, index}) => {
     return (
       <BotRateCard
-        item={item.item}
-        onCardPress={() => {}}
+        item={item}
         activeRate={activeRate}
         setActiveRate={setActiveRate}
+        cardMargin={index === BOT_RATE_CARDS.length - 1 ? 34 : 15}
       />
     );
   };
+
   console.log('SS');
   return (
     <ScrollView style={styles.screen}>
@@ -55,6 +56,7 @@ const CreateBotScreen = (props) => {
         placeholder="NAME"
         placeholderTextColor={Colors.placeholder}
         autoCapitalize={'none'}
+        inputStyle={{paddingHorizontal: 17}}
       />
       <FlatList
         showsHorizontalScrollIndicator={false}
@@ -74,6 +76,7 @@ const CreateBotScreen = (props) => {
         placeholderTextColor={Colors.placeholder}
         autoCapitalize={'none'}
         keyboardType="numeric"
+        inputStyle={{paddingHorizontal: 17}}
       />
       <DefaultTextInput
         onChangeText={(text) => {
@@ -83,8 +86,9 @@ const CreateBotScreen = (props) => {
         placeholder="DESCRIPTION"
         placeholderTextColor={Colors.placeholder}
         autoCapitalize={'none'}
+        inputStyle={{paddingHorizontal: 17}}
       />
-      <View style={{flexDirection: 'row'}}>
+      <View style={{flexDirection: 'row', paddingHorizontal: 17}}>
         <Text style={styles.flagTitle}>Auto-renewal</Text>
         <View style={{flex: 1}}></View>
 
@@ -102,7 +106,7 @@ const CreateBotScreen = (props) => {
           />
         </View>
       </View>
-      <View style={{flexDirection: 'row'}}>
+      <View style={{flexDirection: 'row', paddingHorizontal: 17}}>
         <Text style={styles.flagTitle}>Notifications</Text>
         <View style={{flex: 1}}></View>
 
@@ -120,7 +124,11 @@ const CreateBotScreen = (props) => {
       </View>
       <ButtonComponent
         title="Create Bot"
-        buttonContainerStyle={{padding: 0, marginBottom: 40, marginTop: 10}}
+        buttonContainerStyle={{
+          paddingHorizontal: 17,
+          marginBottom: 40,
+          marginTop: 10,
+        }}
       />
     </ScrollView>
   );
@@ -166,12 +174,11 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: Colors.blackBackground,
     paddingVertical: 25,
-    paddingHorizontal: 17,
   },
   flatList: {
-    flex: 1,
     marginBottom: 20,
     marginTop: 10,
+    paddingHorizontal: 17,
   },
 });
 

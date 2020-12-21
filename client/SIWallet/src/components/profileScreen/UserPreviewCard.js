@@ -19,7 +19,7 @@ const UserPreviewCard = (props) => {
           style={styles.userImage}
         />
         <View style={{justifyContent: 'flex-end', marginBottom: 12}}>
-          <Text style={{...styles.userInfo, fontSize: 22}}>
+          <Text style={{...styles.userInfo, fontSize: 22}} numberOfLines={1}>
             {props.userName}
           </Text>
           <Text style={styles.userInfo}>{'$ ' + props.userBalance}</Text>
@@ -59,6 +59,7 @@ const styles = StyleSheet.create({
     fontSize: 17,
     fontFamily: Global.fonts.BALSAMIQ_BOLD,
     color: Colors.white,
+    width: 196
   },
   userImage: {
     width: 107,

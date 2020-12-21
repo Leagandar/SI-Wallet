@@ -17,7 +17,7 @@ import * as NewsAPI from '../../../API/NewsAPI';
 import NewsCard from '../../../components/discoveryScreen/NewsCard';
 
 const DiscoveryScreen = (props) => {
-  let {userId, token, user} = useSelector((state) => state.auth);
+  let {userId, token} = useSelector((state) => state.auth);
   const [contentCards, setContentCards] = useState();
   const [news, setNews] = useState([]);
   const [newsLoading, setNewsLoading] = useState(false);
@@ -37,6 +37,7 @@ const DiscoveryScreen = (props) => {
 
           setNews(result.data);
           setContentCards(result.data);
+          console.log(result.data);
         } else {
           console.log(result);
           const errorId = result.data.errors?.[0];
@@ -74,7 +75,6 @@ const DiscoveryScreen = (props) => {
   const renderNewsCard = (item, index) => {
     return (
       <NewsCard
-        id={item.item.id}
         news={item.item}
         onCardPress={() => {
           props.navigation.navigate('DiscoveryNavigator', {
@@ -91,7 +91,7 @@ const DiscoveryScreen = (props) => {
 
   const renderEventItem = (item, index) => {
     return (
-      <View id={item.item.title + Math.random()}>
+      <View>
         <TouchableOpacity
           event={item.item}
           onPress={() => {
@@ -109,15 +109,14 @@ const DiscoveryScreen = (props) => {
             style={{width: 300, height: 175, borderRadius: 12}}
           />
         </TouchableOpacity>
-        <Text style={styles.eventTitle} numberOfLines={1}>{item.item.title}</Text>
+        <Text style={styles.eventTitle} numberOfLines={1}>
+          {item.item.title}
+        </Text>
       </View>
     );
   };
 
-  console.log('FINALOCHAKA');
-  console.log(newsLoading, loadingError);
   if (loadingError) {
-    console.log('LOADING ERROR');
     return (
       <ErrorScreen
         isAction={true}
@@ -128,11 +127,8 @@ const DiscoveryScreen = (props) => {
       />
     );
   } else if (newsLoading || !contentCards) {
-    console.log('LOADING SCREEN');
     return <LoadingScreen />;
   } else {
-    // console.log('NORM TEMA');
-    // console.log(contentCards);
     return (
       <View style={{flex: 1, backgroundColor: Colors.blackBackground}}>
         <CardsContent
@@ -149,13 +145,13 @@ const DiscoveryScreen = (props) => {
               <Text style={styles.listHeader}>Top Events</Text>
               <FlatList
                 showsHorizontalScrollIndicator={false}
-                style={props.listStyle}
+                style={styles.listStyle}
                 data={contentCards?.top}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) => item._id}
                 renderItem={renderEventItem}
                 horizontal={true}
               />
-              <Text style={styles.listHeader}>News</Text>
+              <Text style={{...styles.listHeader}}>News</Text>
             </View>
           )}
         />
@@ -175,14 +171,16 @@ const styles = StyleSheet.create({
     fontFamily: Global.fonts.BALSAMIQ_BOLD,
     marginTop: 10,
     marginBottom: 10,
+    paddingHorizontal: 19,
   },
   eventTitle: {
     color: Colors.adressGray,
     fontSize: 16,
     fontFamily: Global.fonts.BALSAMIQ_BOLD,
-    width: 270
+    width: 270,
+    marginLeft: 5,
   },
-  flatList: {
+  listStyle: {
     paddingHorizontal: 19,
   },
 });

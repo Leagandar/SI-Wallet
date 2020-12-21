@@ -44,7 +44,7 @@ const EditProfileScreen = (props) => {
           },
         ]}
         title="Account Info"
-        cardStyle={{marginBottom: 24, height: 194}}
+        cardStyle={{marginBottom: 24, height: 178}}
         isEditEnabled={true}
         onEditPress={() => {
           props.navigation.navigate('EnterUserInfo', {

@@ -1,44 +1,25 @@
 import * as NetworkWorker from './NetworkWorker';
 import * as Constants from '../Global';
 
-export async function editUserInfo(
-  userId,
-  token,
-  name,
-  surname,
-  image,
-  isRegistration = true,
-) {
-  console.log('IMAGE');
-  console.log(image);
-  let resData;
-
-  let data = {};
-
-  if (isRegistration) {
-    data.name = name;
-    data.surname = surname;
-  }
-
-  if (image) {
-    data.image = image.value;
-  } else {
-    data.image = '';
-    console.log(data.image);
-  }
-
-  data.user = userId;
-  data.token = token;
-
-  console.log('OBJECT');
-  console.log(data);
-
-  resData = await NetworkWorker.postServerResponse(
-    '/user/edit-profile',
-    JSON.stringify(data),
+export async function editUserInfo(token, name, surname) {
+  console.log('TOKEN');
+  console.log(token, name, surname);
+  let result = [];
+  result = await NetworkWorker.postServerResponse(
+    `/api/v1/user/update`,
+    JSON.stringify({
+      name: name,
+      surname: surname,
+    }),
+    30000,
+    true,
+    'application/json',
+    {
+      'Content-Type': 'application/json',
+      Authorization: `Bearer ${token}`,
+    },
   );
-
-  return resData;
+  return result;
 }
 
 export async function getUserInfo(token) {

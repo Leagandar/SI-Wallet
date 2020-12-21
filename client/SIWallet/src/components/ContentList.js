@@ -9,7 +9,7 @@ const ContentList = (props) => {
       showsVerticalScrollIndicator={false}
       style={props.listStyle}
       data={props.data}
-      keyExtractor={(item) => item.id}
+      keyExtractor={(item) => item._id}
       renderItem={props.renderItem}
       ListHeaderComponent={props.header}
     />

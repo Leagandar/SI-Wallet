@@ -34,15 +34,10 @@ const BotRateCard = (props) => {
       }}
       style={
         props.activeRate === title
-          ? {
-              borderWidth: 1.2,
-              borderColor: Colors.greenMain,
-              borderRadius: 12,
-              marginRight: 15,
-            }
-          : {marginRight: 15, borderWidth: 1.2, borderColor: 'transparent'}
+          ? {...styles.activeCard, marginRight: props.cardMargin}
+          : {...styles.inActiveCard, marginRight: props.cardMargin}
       }>
-      <LinearGradient style={{...styles.card}} colors={Colors.cardInfoGradient}>
+      <LinearGradient style={styles.card} colors={Colors.cardInfoGradient}>
         <Text style={styles.cardTitle}>{title}</Text>
         <View style={{flexDirection: 'row'}}>
           <Text style={styles.infoText}>Rent price: </Text>
@@ -83,6 +78,19 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontFamily: Global.fonts.BALSAMIQ_BOLD,
     color: Colors.whiteTitle,
+  },
+  activeCard: {
+    borderWidth: 1.2,
+    borderColor: Colors.greenMain,
+    borderRadius: 12,
+    width: 255,
+    marginRight: 15,
+  },
+  inActiveCard: {
+    borderWidth: 1.2,
+    borderColor: 'transparent',
+    width: 255,
+    marginRight: 15,
   },
 });
 

@@ -6,21 +6,52 @@ import {
   Image,
   Keyboard,
   TouchableWithoutFeedback,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import DefaultTextInput from '../../../components/profileScreen/DefaultTextInput';
 import ButtonComponent from '../../../components/ButtonComponent';
 import Colors from '../../../constants/Colors';
 import * as Global from '../../../Global';
-
-import {useDispatch, useSelector} from 'react-redux';
+import * as UserAPI from '../../../API/UserAPI';
+import {useSelector, useDispatch} from 'react-redux';
+import * as authActions from '../../../store/actions/auth';
 
 const EnterUserInfoScreen = (props) => {
   const [name, setName] = useState(props.route.params.name);
   const [surname, setSurname] = useState(props.route.params.surname);
   const [isLoading, setIsLoading] = useState(false);
-  const [registrationError, setRegistrationError] = useState();
-  const {authType, userId, token} = props.route.params;
+  const [loadingError, setLoadingError] = useState();
+  const {token} = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+
+  const editUserInfo = async (token, name, surname) => {
+    let result;
+
+    setLoadingError(undefined);
+    setIsLoading(true);
+    try {
+      result = await UserAPI.editUserInfo(token, name, surname);
+      if (result.statusCode === 200) {
+        dispatch(authActions.setUserInfo(result.data));
+        props.navigation.goBack();
+      } else {
+        console.log(result);
+        const errorId = result.data.errors?.[0];
+        let message = Global.getErrorMessage(
+          errorId,
+          'SignUpSecondScreen/editUserInfo',
+          false,
+        );
+        throw new Error(message);
+      }
+    } catch (err) {
+      Alert.alert('Manage profile', "Can't edit user info", [{text: 'OK'}]);
+      setLoadingError(err.message);
+      console.log('error while editing user info -->' + err.message);
+    }
+    setIsLoading(false);
+  };
 
   return (
     <View style={{flex: 1, backgroundColor: Colors.blackBackground}}>
@@ -51,14 +82,21 @@ const EnterUserInfoScreen = (props) => {
             placeholderTextColor={Colors.placeholder}
             autoCapitalize={'none'}
           />
-          <ButtonComponent
-            title={'Save'}
-            onPress={() => {
-              //signInHandler(login, password);
-              props.navigation.goBack();
-            }}
-            buttonContainerStyle={{padding: 0}}
-          />
+          {isLoading ? (
+            <View style={styles.activityIndicator}>
+              <ActivityIndicator size="large" color={Colors.greenMain} />
+            </View>
+          ) : (
+            <View style={styles.buttonsContainer}>
+              <ButtonComponent
+                title={'Save'}
+                onPress={() => {
+                  editUserInfo(token, name, surname);
+                }}
+                buttonContainerStyle={{padding: 0}}
+              />
+            </View>
+          )}
         </View>
       </TouchableWithoutFeedback>
     </View>

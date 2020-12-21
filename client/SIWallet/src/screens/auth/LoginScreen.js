@@ -100,7 +100,7 @@ const LoginScreen = (props) => {
             autoCapitalize={'none'}
             secureTextEntry={true}
           />
-          <View style={styles.checkBoxInfoContainer}>
+          {/* <View style={styles.checkBoxInfoContainer}>
             <TouchableOpacity
               style={styles.checkBox}
               onPress={() => {
@@ -118,7 +118,7 @@ const LoginScreen = (props) => {
             <TouchableOpacity onPress={() => {}}>
               <Text style={styles.forgotText}>Forgot password?</Text>
             </TouchableOpacity>
-          </View>
+          </View> */}
           {isLoading ? (
             <View style={styles.activityIndicator}>
               <ActivityIndicator size="large" color={Colors.greenMain} />

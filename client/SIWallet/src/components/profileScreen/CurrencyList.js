@@ -1,55 +1,21 @@
 import React, {useState} from 'react';
-import {StyleSheet, View, Text, Image, TouchableOpacity} from 'react-native';
+import {StyleSheet, FlatList} from 'react-native';
 import LinearGradient from 'react-native-linear-gradient';
 import Colors from '../../constants/Colors';
 import * as Global from '../../Global';
 
 const CurrencyList = (props) => {
-  console.log('props');
-  console.log(props);
-  const currencies = props.currencies.map((currency, index) => {
-    return (
-      <TouchableOpacity id={currency.currency + Math.random()}>
-        <View style={styles.menuSection}>
-          {/* <Image style={styles.menuItemImage} source={currency.image} /> */}
-          <View>
-            <View style={{flexDirection: 'row'}}>
-              <Text style={styles.menuItemTitle} numberOfLines={1}>
-                {currency.title}
-              </Text>
-              {/* <Text style={styles.profitTitle}>{currency.profit + '%'}</Text> */}
-            </View>
-            <Text style={styles.currencyAdress}>
-              {currency.balances[0].address}
-            </Text>
-          </View>
-
-          <View style={{flex: 1, alignItems: 'flex-end'}}>
-            <View>
-              <Text style={styles.currencyAmount}>
-                {currency.available_balance}
-              </Text>
-              <Text style={styles.currencyPrice}>
-                {'$' + currency.price_usd}
-              </Text>
-            </View>
-          </View>
-        </View>
-        {index != props.currencies.length - 1 && (
-          <View style={styles.separator}></View>
-        )}
-      </TouchableOpacity>
-    );
-  });
   return (
-    <LinearGradient
-      style={{
-        ...styles.card,
-        ...props.cardStyle,
-      }}
-      colors={Colors.cardInfoGradient}>
-      <View style={styles.list}>{currencies}</View>
-    </LinearGradient>
+    <FlatList
+      showsVerticalScrollIndicator={false}
+      style={props.cardStyle}
+      data={props.currencies}
+      keyExtractor={(item) =>
+        props.isMarket ? item.id : item.main_data.data.id
+      }
+      renderItem={props.renderCurrencyItem}
+      ListHeaderComponent={props.header}
+    />
   );
 };
 
@@ -63,53 +29,6 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     shadowRadius: 2,
     elevation: 2,
-  },
-  list: {},
-  menuSection: {
-    marginLeft: 16,
-    marginRight: 13,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    height: 63,
-  },
-  menuItemImage: {
-    height: 42,
-    width: 42,
-    marginRight: 10,
-    marginTop: 4,
-  },
-  currencyAdress: {
-    color: Colors.adressGray,
-    fontSize: 10,
-    fontFamily: Global.fonts.BALSAMIQ_BOLD,
-  },
-  menuItemTitle: {
-    color: Colors.whiteTitle,
-    fontSize: 18,
-    fontFamily: Global.fonts.BALSAMIQ_BOLD,
-    marginRight: 8,
-  },
-  profitTitle: {
-    color: Colors.greenMain,
-    fontSize: 10,
-    fontFamily: Global.fonts.BALSAMIQ_BOLD,
-    marginTop: 8,
-  },
-  currencyAmount: {
-    color: Colors.whiteTitle,
-    fontSize: 13,
-    fontFamily: Global.fonts.BALSAMIQ_BOLD,
-  },
-  currencyPrice: {
-    color: Colors.adressGray,
-    fontSize: 13,
-    fontFamily: Global.fonts.BALSAMIQ_BOLD,
-  },
-  separator: {
-    borderColor: Colors.blackStroke,
-    borderWidth: 0.7,
-    width: '100%',
   },
 });
 
