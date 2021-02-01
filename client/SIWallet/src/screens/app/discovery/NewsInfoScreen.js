@@ -1,14 +1,12 @@
 import React, {useCallback} from 'react';
 import {
   Text,
-  View,
   StyleSheet,
   Image,
   TouchableOpacity,
   ScrollView,
   Linking,
   Alert,
-  Button,
 } from 'react-native';
 import Colors from '../../../constants/Colors';
 import * as Global from '../../../Global';
@@ -57,7 +55,7 @@ export const screenOptions = (navData) => {
       fontFamily: Global.fonts.BALSAMIQ_BOLD,
       color: Colors.whiteTitle,
       marginRight: 20,
-      marginBottom: 6
+      marginBottom: 6,
     },
     headerTitleAlign: 'center',
     headerLeft: (props) => (

@@ -1,7 +1,6 @@
 import React from 'react';
 import {StyleSheet, View, Text, TouchableOpacity, Image} from 'react-native';
 import Colors from '../../constants/Colors';
-import LinearGradient from 'react-native-linear-gradient';
 import * as Global from '../../Global';
 
 const NewsCard = (props) => {

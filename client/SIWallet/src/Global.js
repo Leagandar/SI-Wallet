@@ -7,7 +7,7 @@ export const fonts = {
 
 let TOKEN = '';
 
-export const SERVER_ADDRESS = 'http://17e330d6be69.ngrok.io';
+export const SERVER_ADDRESS = 'http://82bf1b77333c.ngrok.io';
 export const IMAGES_REPO = '/assets/';
 
 export function getToken() {

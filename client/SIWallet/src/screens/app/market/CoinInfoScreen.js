@@ -81,7 +81,7 @@ const CoinInfoScreen = (props) => {
             currency?.market_data.ohlcv_last_24_hour.close -
             currency?.market_data.ohlcv_last_24_hour.open
           ).toFixed(2)}
-          balance={currency?.market_data.price_usd.toFixed(2)}
+          balance={'$' + currency?.market_data.price_usd.toFixed(2)}
           cardStyle={{marginTop: 20, marginBottom: 24, height: 120}}
           firstTitle="PRICE"
           secondTitle="24H CHANGE"
