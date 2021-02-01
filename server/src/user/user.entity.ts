@@ -4,7 +4,20 @@ import { Table, Column, Model, DataType } from 'sequelize-typescript';
 export class User extends Model<User>{
 	@Column({
 		type: DataType.STRING,
+		allowNull: false
+	})
+	name: string
+
+	@Column({
+		type: DataType.STRING,
+		allowNull: false
+	})
+	surname: string
+
+	@Column({
+		type: DataType.STRING,
 		allowNull: false,
+		unique: true
 	})
 	username: string;
 
@@ -21,10 +34,9 @@ export class User extends Model<User>{
 	})
 	password: string;
 
-	// @Column({
-	//     type: DataType.INTEGER,
-	//     defaultValue: 0,
-	//     allowNull: false,
-	// })
-	// balance: number;
+	@Column({
+		type: DataType.BOOLEAN,
+		defaultValue: true
+	})
+	notification:boolean;
 }
