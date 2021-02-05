@@ -16,6 +16,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import * as authActions from '../../store/actions/auth';
 import * as AuthAPI from '../../API/AuthAPI';
 import DefaultTextInput from '../../components/profileScreen/DefaultTextInput';
+import AnimatedTextInput from '../../components/profileScreen/AnimatedTextInput';
 import ButtonComponent from '../../components/ButtonComponent';
 import {CommonActions} from '@react-navigation/native';
 
@@ -81,23 +82,20 @@ const LoginScreen = (props) => {
         </View>
         <View style={{flex: 1}}></View>
         <View style={{paddingHorizontal: 17, marginBottom: 20}}>
-          <DefaultTextInput
+          <AnimatedTextInput
             onChangeText={(text) => {
               setLogin(text);
             }}
             value={login}
-            placeholder="USERNAME"
-            placeholderTextColor={Colors.placeholder}
-            autoCapitalize={'none'}
+            label="Username"
+            inputStyle={{zIndex: 4}}
           />
-          <DefaultTextInput
+          <AnimatedTextInput
             onChangeText={(text) => {
               setPassword(text);
             }}
             value={password}
-            placeholder="PASSWORD"
-            placeholderTextColor={Colors.placeholder}
-            autoCapitalize={'none'}
+            label="Password"
             secureTextEntry={true}
           />
           {/* <View style={styles.checkBoxInfoContainer}>

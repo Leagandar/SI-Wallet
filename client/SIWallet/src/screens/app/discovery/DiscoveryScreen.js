@@ -6,6 +6,7 @@ import {
   FlatList,
   TouchableOpacity,
   Image,
+  Animated,
 } from 'react-native';
 import Colors from '../../../constants/Colors';
 import * as Global from '../../../Global';
@@ -14,7 +15,7 @@ import ErrorScreen from '../../../components/ErrorScreen';
 import ContentList from '../../../components/ContentList';
 import {useDispatch, useSelector} from 'react-redux';
 import * as NewsAPI from '../../../API/NewsAPI';
-import NewsCard from '../../../components/discoveryScreen/NewsCard';
+import newsData from '../../../data/dummy-news-data';
 
 const DiscoveryScreen = (props) => {
   let {userId, token} = useSelector((state) => state.auth);
@@ -58,36 +59,27 @@ const DiscoveryScreen = (props) => {
   );
 
   useEffect(() => {
-    getNews(token);
+    //getNews(token);
+    //console.log(newsData)
+    setNews(newsData);
+    setContentCards(newsData);
+    console.log('LATEST');
+    //console.log(contentCards.latest);
   }, []);
 
-  if (!userId && !token) {
-    CardsContent = ErrorScreen;
-  } else {
-    CardsContent = ContentList;
-    if (loadingError) {
-      CardsContent = ErrorScreen;
-    } else if (newsLoading) {
-      CardsContent = LoadingScreen;
-    }
-  }
+  // if (!userId && !token) {
+  //   CardsContent = ErrorScreen;
+  // } else {
+  //
+  //   if (loadingError) {
+  //     CardsContent = ErrorScreen;
+  //   } else if (newsLoading) {
+  //     CardsContent = LoadingScreen;
+  //   }
+  // }
+  CardsContent = ContentList;
 
-  const renderNewsCard = (item, index) => {
-    return (
-      <NewsCard
-        news={item.item}
-        onCardPress={() => {
-          props.navigation.navigate('DiscoveryNavigator', {
-            screen: 'NewsInfo',
-            params: {
-              newsItem: item.item,
-              title: item.item.title,
-            },
-          });
-        }}
-      />
-    );
-  };
+  
 
   const renderEventItem = (item, index) => {
     return (
@@ -129,31 +121,34 @@ const DiscoveryScreen = (props) => {
   } else if (newsLoading || !contentCards) {
     return <LoadingScreen />;
   } else {
+    console.log('IMA HERE');
+    console.log(newsData.latest);
     return (
       <View style={{flex: 1, backgroundColor: Colors.blackBackground}}>
         <CardsContent
-          data={contentCards?.latest}
-          renderItem={renderNewsCard}
+          data={newsData.latest}
           listStyle={styles.flatList}
           isAction={true}
           errorText={'An error occured while getting news, try again'}
           onErrorPress={() => {
-            getNews(token);
+            //getNews(token);
+            setNews(newsData);
+            setContentCards(newsData);
           }}
-          header={() => (
-            <View>
-              <Text style={styles.listHeader}>Top Events</Text>
-              <FlatList
-                showsHorizontalScrollIndicator={false}
-                style={styles.listStyle}
-                data={contentCards?.top}
-                keyExtractor={(item) => item._id}
-                renderItem={renderEventItem}
-                horizontal={true}
-              />
-              <Text style={{...styles.listHeader}}>News</Text>
-            </View>
-          )}
+          // header={() => (
+          //   <View>
+          //     <Text style={styles.listHeader}>Top Events</Text>
+          //     <FlatList
+          //       showsHorizontalScrollIndicator={false}
+          //       style={styles.listStyle}
+          //       data={contentCards?.top}
+          //       keyExtractor={(item) => item._id}
+          //       renderItem={renderEventItem}
+          //       horizontal={true}
+          //     />
+          //     <Text style={{...styles.listHeader}}>News</Text>
+          //   </View>
+          // )}
         />
       </View>
     );

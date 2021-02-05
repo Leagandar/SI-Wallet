@@ -16,6 +16,7 @@ import {useDispatch, useSelector} from 'react-redux';
 import * as authActions from '../../store/actions/auth';
 import * as AuthAPI from '../../API/AuthAPI';
 import DefaultTextInput from '../../components/profileScreen/DefaultTextInput';
+import AnimatedTextInput from '../../components/profileScreen/AnimatedTextInput';
 import ButtonComponent from '../../components/ButtonComponent';
 import {CommonActions} from '@react-navigation/native';
 
@@ -94,63 +95,56 @@ const SignUpScreen = (props) => {
       </View>
       <View style={{flex: 1}}></View>
       <View style={{paddingHorizontal: 17, marginBottom: 20}}>
-        <DefaultTextInput
+        <AnimatedTextInput
           onChangeText={(text) => {
             setName(text);
           }}
           value={name}
-          placeholder="NAME"
-          placeholderTextColor={Colors.placeholder}
-          autoCapitalize={'none'}
+          label="Name"
+          inputStyle={{zIndex: 3}}
         />
-        <DefaultTextInput
+        <AnimatedTextInput
           onChangeText={(text) => {
             setSurname(text);
           }}
           value={surname}
-          placeholder="SURNAME"
-          placeholderTextColor={Colors.placeholder}
-          autoCapitalize={'none'}
+          label="Surname"
+          inputStyle={{zIndex: 2}}
         />
-        <DefaultTextInput
+        <AnimatedTextInput
           onChangeText={(text) => {
             setEmail(text);
           }}
           value={email}
-          placeholder="EMAIL"
-          placeholderTextColor={Colors.placeholder}
-          autoCapitalize={'none'}
+          label="Email"
+          inputStyle={{zIndex: 1}}
         />
-        <DefaultTextInput
+        <AnimatedTextInput
           onChangeText={(text) => {
             setLogin(text);
           }}
           value={login}
-          placeholder="USERNAME"
-          placeholderTextColor={Colors.placeholder}
-          autoCapitalize={'none'}
+          label="Username"
+          inputStyle={{zIndex: 0}}
         />
-        <DefaultTextInput
+        <AnimatedTextInput
           onChangeText={(text) => {
             setPassword(text);
           }}
           value={password}
-          placeholder="PASSWORD"
-          placeholderTextColor={Colors.placeholder}
-          autoCapitalize={'none'}
+          label="Password"
           secureTextEntry={true}
+          inputStyle={{zIndex: -1}}
         />
-        <DefaultTextInput
+        <AnimatedTextInput
           onChangeText={(text) => {
             setRepeatedPassword(text);
           }}
           value={repeatedPassword}
-          placeholder="CONFIRM PASSWORD"
-          placeholderTextColor={Colors.placeholder}
-          autoCapitalize={'none'}
+          label="Confirm password"
           secureTextEntry={true}
+          inputStyle={{zIndex: -2}}
         />
-
         <View style={styles.checkBoxInfoContainer}>
           <TouchableOpacity
             style={styles.checkBox}

@@ -28,12 +28,12 @@ const WalletNavigator = (props) => {
   return (
     <MyStackNavigator.Navigator
       screenOptions={defaultNavOptions}
-      initialRouteName="StartupScreen">
-      <MyStackNavigator.Screen
+      initialRouteName="TabNavigator">
+      {/* <MyStackNavigator.Screen
         name="StartupScreen"
         component={StartupScreen}
         options={{headerShown: false}}
-      />
+      /> */}
       <MyStackNavigator.Screen
         name="TabNavigator"
         component={TabNavigator}

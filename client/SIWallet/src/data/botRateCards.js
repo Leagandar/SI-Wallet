@@ -1,3 +1,12 @@
+export const detailsList = ['rentPrice', 'rentTime', 'range', 'APY'];
+
+export const iconsByType = {
+  rentPrice: 'rentIcon.png',
+  rentTime: 'rentTimeIcon',
+  range: 'rangeIcon.png',
+  APY: 'APYIcon.png',
+};
+
 export default [
   {
     title: 'MiniBot',
@@ -5,6 +14,7 @@ export default [
     rentTime: 30,
     tradingBalanceDown: 15,
     tradingBalanceUp: 250,
+    range: tradingBalanceDown + '-' + tradingBalanceUp,
     APY: 6,
     id: 'MiniBotID',
   },
@@ -14,6 +24,7 @@ export default [
     rentTime: 60,
     tradingBalanceDown: 45,
     tradingBalanceUp: 700,
+    range: tradingBalanceDown + '-' + tradingBalanceUp,
     APY: 9,
     id: 'StandartBotID',
   },
@@ -23,6 +34,7 @@ export default [
     rentTime: 90,
     tradingBalanceDown: 100,
     tradingBalanceUp: 2500,
+    range: tradingBalanceDown + '-' + tradingBalanceUp,
     APY: 12,
     id: 'ProBotID',
   },
@@ -32,6 +44,7 @@ export default [
     rentTime: 90,
     tradingBalanceDown: 1000,
     tradingBalanceUp: 10000,
+    range: tradingBalanceDown + '-' + tradingBalanceUp,
     APY: 24,
     id: 'NetPremiumID',
   },

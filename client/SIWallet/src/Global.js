@@ -7,7 +7,7 @@ export const fonts = {
 
 let TOKEN = '';
 
-export const SERVER_ADDRESS = 'https://si-wallet-server.herokuapp.com';
+export const SERVER_ADDRESS = 'http://f382b7f942e8.ngrok.io';
 export const IMAGES_REPO = '/assets/';
 
 export function getToken() {
@@ -40,7 +40,7 @@ export function getErrorMessage(errorId, source, details = true) {
       message = 'Something went wrong';
   }
   if (details) {
-    return `Возникла ошибка в ${source} => ` + message;
+    return `An error occured in ${source} => ` + message;
   } else {
     return message;
   }

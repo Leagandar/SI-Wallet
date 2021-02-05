@@ -1,26 +1,38 @@
 import React from 'react';
-import {StyleSheet, View, Text, TouchableOpacity, Image} from 'react-native';
+import {
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  Image,
+  Animated,
+} from 'react-native';
 import Colors from '../../constants/Colors';
 import * as Global from '../../Global';
 
 const NewsCard = (props) => {
   return (
-    <TouchableOpacity style={styles.newsContainer} onPress={props.onCardPress}>
-      <View style={{flex: 1}}>
-        <Text style={styles.titleText} numberOfLines={3}>
-          {props.news.title}
-        </Text>
-        <View style={{flex: 1, justifyContent: 'flex-end'}}>
-          <Text style={styles.dateText}>
-            {new Date(props.news.publishedAt).toDateString()}
+    <Animated.View
+      style={{transform: [{scale: props.scale}], opacity: props.opacity}}>
+      <TouchableOpacity
+        style={styles.newsContainer}
+        onPress={props.onCardPress}>
+        <View style={{flex: 1}}>
+          <Text style={styles.titleText} numberOfLines={3}>
+            {props.news.title}
           </Text>
+          <View style={{flex: 1, justifyContent: 'flex-end'}}>
+            <Text style={styles.dateText}>
+              {new Date(props.news.publishedAt).toDateString()}
+            </Text>
+          </View>
         </View>
-      </View>
-      <Image
-        source={{uri: props.news.originalImageUrl}}
-        style={styles.newsImage}
-      />
-    </TouchableOpacity>
+        <Image
+          source={{uri: props.news.originalImageUrl}}
+          style={styles.newsImage}
+        />
+      </TouchableOpacity>
+    </Animated.View>
   );
 };
 
@@ -35,7 +47,6 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     marginBottom: 16,
     paddingHorizontal: 19,
-
   },
   titleText: {
     fontFamily: Global.fonts.BALSAMIQ_BOLD,

@@ -7,6 +7,9 @@ import BotsScreen, {
 import CreateBotScreen, {
   screenOptions as createBotScreenOptions,
 } from '../../screens/app/bots/CreateBotScreen';
+import CreateBotScreen_2, {
+  screenOptions as createBotScreenOptions2,
+} from '../../screens/app/bots/CreateBotScreen_2';
 import BotInfoScreen, {
   screenOptions as botInfoScreenOptions,
 } from '../../screens/app/bots/BotInfoScreen';
