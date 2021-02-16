@@ -38,8 +38,8 @@ const BotsNavigator = (props) => {
       />
       <MyStackNavigator.Screen
         name="CreateBot"
-        component={CreateBotScreen}
-        options={createBotScreenOptions}
+        component={CreateBotScreen_2}
+        options={createBotScreenOptions2}
       />
       <MyStackNavigator.Screen
         name="BotInfo"

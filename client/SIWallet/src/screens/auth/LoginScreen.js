@@ -15,10 +15,128 @@ import * as Global from '../../Global';
 import {useDispatch, useSelector} from 'react-redux';
 import * as authActions from '../../store/actions/auth';
 import * as AuthAPI from '../../API/AuthAPI';
-import DefaultTextInput from '../../components/profileScreen/DefaultTextInput';
+import KeyboardAvoidingComponent from '../../components/KeyboardAvoidingComponent';
 import AnimatedTextInput from '../../components/profileScreen/AnimatedTextInput';
 import ButtonComponent from '../../components/ButtonComponent';
 import {CommonActions} from '@react-navigation/native';
+
+export const Header = (props) => {
+  return (
+    <View style={styles.headerContainer}>
+      <Logo />
+      <Text style={styles.titleText}>SIWallet</Text>
+    </View>
+  );
+};
+
+export const Logo = (props) => {
+  return (
+    <Image
+      source={require('../../assets/images/SIWalletIcon.png')}
+      style={styles.walletIcon}
+    />
+  );
+};
+
+const InputFields = (props) => {
+  return (
+    <View>
+      <AnimatedTextInput
+        onChangeText={(text) => {
+          props.setLogin(text);
+        }}
+        value={props.login}
+        label="Username"
+        inputStyle={{zIndex: 4}}
+      />
+      <AnimatedTextInput
+        onChangeText={(text) => {
+          props.setPassword(text);
+        }}
+        value={props.password}
+        label="Password"
+        secureTextEntry={true}
+      />
+    </View>
+  );
+};
+
+const CheckBox = (props) => {
+  return (
+    <View style={{flexDirection: 'row'}}>
+      <TouchableOpacity
+        style={styles.checkBox}
+        onPress={() => {
+          props.setCheckActive(!props.enabled);
+        }}>
+        {props.enabled && (
+          <Image
+            source={require('../../assets/images/blueCheckIcon.png')}
+            style={styles.checkIcon}
+          />
+        )}
+      </TouchableOpacity>
+      <Text style={styles.rememberMeText}>Remember me</Text>
+    </View>
+  );
+};
+
+const ResetPasswordComponent = (props) => {
+  return (
+    <TouchableOpacity onPress={() => {}}>
+      <Text style={styles.forgotText}>Forgot password?</Text>
+    </TouchableOpacity>
+  );
+};
+
+const ButtonsContainer = (props) => {
+  return (
+    <View>
+      {props.isLoading ? (
+        <View style={styles.activityIndicator}>
+          <ActivityIndicator size="large" color={Colors.greenMain} />
+        </View>
+      ) : (
+        <View style={styles.buttonsContainer}>
+          <ButtonComponent
+            title="SIGN IN"
+            onPress={() => {
+              props.signInHandler(props.login, props.password);
+            }}
+            buttonContainerStyle={styles.buttonContainer}
+          />
+          <ButtonComponent
+            title="SIGN UP"
+            onPress={() => {
+              props.navigation.navigate('SignUp');
+            }}
+            buttonContainerStyle={styles.buttonContainer}
+            buttonStyle={{backgroundColor: Colors.grayBackground}}
+          />
+        </View>
+      )}
+    </View>
+  );
+};
+
+const TouchableImage = (props) => {
+  return (
+    <TouchableOpacity>
+      <Image source={props.source} style={styles.socialMediaIcon} />
+    </TouchableOpacity>
+  );
+};
+
+const SocialMediaAuthContainer = (props) => {
+  return (
+    <View style={styles.socialMediaContainer}>
+      <TouchableImage source={require('../../assets/images/fbIcon.png')} />
+      <TouchableImage source={require('../../assets/images/twitterIcon.png')} />
+      <TouchableImage source={require('../../assets/images/instIcon.png')} />
+      <TouchableImage source={require('../../assets/images/googleIcon.png')} />
+    </View>
+  );
+};
 
 const LoginScreen = (props) => {
   const [login, setLogin] = useState();
@@ -27,6 +145,10 @@ const LoginScreen = (props) => {
   const [isLoading, setIsLoading] = useState(false);
   const [loginError, setLoginError] = useState();
   const dispatch = useDispatch();
+
+  const onSubmit = (data) => {
+    console.log(data);
+  };
 
   const signInHandler = async (email, password) => {
     setLoginError(null);
@@ -67,113 +189,33 @@ const LoginScreen = (props) => {
   }, [loginError]);
 
   return (
-    <TouchableWithoutFeedback
-      style={{
-        flex: 1,
-      }}
-      onPress={() => Keyboard.dismiss()}>
-      <View style={{flex: 1, backgroundColor: Colors.blackBackground}}>
-        <View style={styles.headerContainer}>
-          <Image
-            source={require('../../assets/images/SIWalletIcon.png')}
-            style={styles.walletIcon}
-          />
-          <Text style={styles.titleText}>SIWallet</Text>
-        </View>
+    <KeyboardAvoidingComponent>
+      <View style={styles.screen}>
+        <Header />
         <View style={{flex: 1}}></View>
         <View style={{paddingHorizontal: 17, marginBottom: 20}}>
-          <AnimatedTextInput
-            onChangeText={(text) => {
-              setLogin(text);
-            }}
-            value={login}
-            label="Username"
-            inputStyle={{zIndex: 4}}
+          <InputFields
+            login={login}
+            password={password}
+            setLogin={setLogin}
+            setPassword={setPassword}
           />
-          <AnimatedTextInput
-            onChangeText={(text) => {
-              setPassword(text);
-            }}
-            value={password}
-            label="Password"
-            secureTextEntry={true}
-          />
-          {/* <View style={styles.checkBoxInfoContainer}>
-            <TouchableOpacity
-              style={styles.checkBox}
-              onPress={() => {
-                setCheckActive(!isCheckActive);
-              }}>
-              {isCheckActive && (
-                <Image
-                  source={require('../../assets/images/blueCheckIcon.png')}
-                  style={styles.checkIcon}
-                />
-              )}
-            </TouchableOpacity>
-            <Text style={styles.rememberMeText}>Remember me</Text>
-            <View style={{flex: 1}}></View>
-            <TouchableOpacity onPress={() => {}}>
-              <Text style={styles.forgotText}>Forgot password?</Text>
-            </TouchableOpacity>
-          </View> */}
-          {isLoading ? (
-            <View style={styles.activityIndicator}>
-              <ActivityIndicator size="large" color={Colors.greenMain} />
-            </View>
-          ) : (
-            <View style={styles.buttonsContainer}>
-              <ButtonComponent
-                title={'SIGN IN'}
-                onPress={() => {
-                  signInHandler(login, password);
-                }}
-                buttonContainerStyle={{padding: 0, width: 155}}
-              />
-              <ButtonComponent
-                title={'SIGN UP'}
-                onPress={() => {
-                  props.navigation.navigate('SignUp');
-                  //signInHandler(login, password);
-                }}
-                buttonContainerStyle={{padding: 0, width: 155}}
-                buttonStyle={{
-                  backgroundColor: Colors.grayBackground,
-                }}
-              />
-            </View>
-          )}
-
-          <Text style={styles.orLoginText}>Or login with</Text>
-          <View style={styles.socialMediaContainer}>
-            <TouchableOpacity>
-              <Image
-                source={require('../../assets/images/fbIcon.png')}
-                style={styles.socialMediaIcon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Image
-                source={require('../../assets/images/twitterIcon.png')}
-                style={styles.socialMediaIcon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Image
-                source={require('../../assets/images/instIcon.png')}
-                style={styles.socialMediaIcon}
-              />
-            </TouchableOpacity>
-            <TouchableOpacity>
-              <Image
-                source={require('../../assets/images/googleIcon.png')}
-                style={styles.socialMediaIcon}
-              />
-            </TouchableOpacity>
+          <View style={styles.checkBoxInfoContainer}>
+            <CheckBox enabled={isCheckActive} setCheckActive={setCheckActive} />
+            <ResetPasswordComponent />
           </View>
+          <ButtonsContainer
+            isLoading={isLoading}
+            signInHandler={signInHandler}
+            navigation={props.navigation}
+            login={login}
+            password={password}
+          />
+          <Text style={styles.orLoginText}>Or login with</Text>
+          <SocialMediaAuthContainer />
         </View>
       </View>
-    </TouchableWithoutFeedback>
+    </KeyboardAvoidingComponent>
   );
 };
 
@@ -189,6 +231,10 @@ export const screenOptions = (navData) => {
   };
 };
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: Colors.blackBackground,
+  },
   walletIcon: {
     width: 87,
     height: 81,
@@ -225,6 +271,7 @@ const styles = StyleSheet.create({
     marginTop: 17,
     paddingHorizontal: 2,
     marginBottom: 27,
+    justifyContent: 'space-between',
   },
   rememberMeText: {
     fontSize: 15,
@@ -260,6 +307,10 @@ const styles = StyleSheet.create({
     height: 99,
     alignItems: 'center',
     justifyContent: 'center',
+  },
+  buttonContainer: {
+    padding: 0,
+    width: 155,
   },
 });
 

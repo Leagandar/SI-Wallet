@@ -6,19 +6,20 @@ import {
   Image,
   TouchableOpacity,
   Keyboard,
-  ScrollView,
   Alert,
   ActivityIndicator,
+  ScrollView,
 } from 'react-native';
 import Colors from '../../constants/Colors';
 import * as Global from '../../Global';
 import {useDispatch, useSelector} from 'react-redux';
 import * as authActions from '../../store/actions/auth';
 import * as AuthAPI from '../../API/AuthAPI';
-import DefaultTextInput from '../../components/profileScreen/DefaultTextInput';
+import KeyboardAvoidingComponent from '../../components/KeyboardAvoidingComponent';
 import AnimatedTextInput from '../../components/profileScreen/AnimatedTextInput';
 import ButtonComponent from '../../components/ButtonComponent';
 import {CommonActions} from '@react-navigation/native';
+import {Header, Logo} from './LoginScreen';
 
 const SignUpScreen = (props) => {
   const [login, setLogin] = useState();
@@ -81,103 +82,101 @@ const SignUpScreen = (props) => {
   }, [registrationError]);
 
   return (
-    <ScrollView
-      style={{
-        flex: 1,
-        backgroundColor: Colors.blackBackground,
-      }}>
-      <View style={styles.headerContainer}>
-        <Image
-          source={require('../../assets/images/SIWalletIcon.png')}
-          style={styles.walletIcon}
-        />
-        <Text style={styles.titleText}>SIWallet</Text>
-      </View>
-      <View style={{flex: 1}}></View>
-      <View style={{paddingHorizontal: 17, marginBottom: 20}}>
-        <AnimatedTextInput
-          onChangeText={(text) => {
-            setName(text);
-          }}
-          value={name}
-          label="Name"
-          inputStyle={{zIndex: 3}}
-        />
-        <AnimatedTextInput
-          onChangeText={(text) => {
-            setSurname(text);
-          }}
-          value={surname}
-          label="Surname"
-          inputStyle={{zIndex: 2}}
-        />
-        <AnimatedTextInput
-          onChangeText={(text) => {
-            setEmail(text);
-          }}
-          value={email}
-          label="Email"
-          inputStyle={{zIndex: 1}}
-        />
-        <AnimatedTextInput
-          onChangeText={(text) => {
-            setLogin(text);
-          }}
-          value={login}
-          label="Username"
-          inputStyle={{zIndex: 0}}
-        />
-        <AnimatedTextInput
-          onChangeText={(text) => {
-            setPassword(text);
-          }}
-          value={password}
-          label="Password"
-          secureTextEntry={true}
-          inputStyle={{zIndex: -1}}
-        />
-        <AnimatedTextInput
-          onChangeText={(text) => {
-            setRepeatedPassword(text);
-          }}
-          value={repeatedPassword}
-          label="Confirm password"
-          secureTextEntry={true}
-          inputStyle={{zIndex: -2}}
-        />
-        <View style={styles.checkBoxInfoContainer}>
-          <TouchableOpacity
-            style={styles.checkBox}
-            onPress={() => {
-              setCheckActive(!isCheckActive);
-            }}>
-            {isCheckActive && (
-              <Image
-                source={require('../../assets/images/blueCheckIcon.png')}
-                style={styles.checkIcon}
-              />
-            )}
-          </TouchableOpacity>
-          <Text style={styles.rememberMeText}>I have read and agree</Text>
-          <TouchableOpacity onPress={() => {}}>
-            <Text style={styles.forgotText}> Terms of Service</Text>
-          </TouchableOpacity>
-        </View>
-        {isLoading ? (
-          <View style={styles.activityIndicator}>
-            <ActivityIndicator size="large" color={Colors.greenMain} />
-          </View>
-        ) : (
-          <ButtonComponent
-            title={'SIGN UP'}
-            onPress={() => {
-              signUpHandler(email, password, login, name, surname);
-            }}
-            buttonContainerStyle={{padding: 0}}
+    <KeyboardAvoidingComponent>
+      <ScrollView >
+        <View style={styles.headerContainer}>
+          <Image
+            source={require('../../assets/images/SIWalletIcon.png')}
+            style={styles.walletIcon}
           />
-        )}
-      </View>
-    </ScrollView>
+          <Text style={styles.titleText}>SIWallet</Text>
+        </View>
+        <View style={{paddingHorizontal: 17, marginBottom: 20}}>
+          <AnimatedTextInput
+            onChangeText={(text) => {
+              setName(text);
+            }}
+            value={name}
+            label="Name"
+            inputStyle={{zIndex: 3}}
+          />
+          <AnimatedTextInput
+            onChangeText={(text) => {
+              setSurname(text);
+            }}
+            value={surname}
+            label="Surname"
+            inputStyle={{zIndex: 2}}
+          />
+          <AnimatedTextInput
+            onChangeText={(text) => {
+              setEmail(text);
+            }}
+            value={email}
+            label="Email"
+            inputStyle={{zIndex: 1}}
+          />
+          <AnimatedTextInput
+            onChangeText={(text) => {
+              setLogin(text);
+            }}
+            value={login}
+            label="Username"
+            inputStyle={{zIndex: 0}}
+          />
+          <AnimatedTextInput
+            onChangeText={(text) => {
+              setPassword(text);
+            }}
+            value={password}
+            label="Password"
+            secureTextEntry={true}
+            inputStyle={{zIndex: -1}}
+          />
+          <AnimatedTextInput
+            onChangeText={(text) => {
+              setRepeatedPassword(text);
+            }}
+            value={repeatedPassword}
+            label="Confirm password"
+            secureTextEntry={true}
+            inputStyle={{zIndex: -2}}
+          />
+
+          <View style={styles.checkBoxInfoContainer}>
+            <TouchableOpacity
+              style={styles.checkBox}
+              onPress={() => {
+                setCheckActive(!isCheckActive);
+              }}>
+              {isCheckActive && (
+                <Image
+                  source={require('../../assets/images/blueCheckIcon.png')}
+                  style={styles.checkIcon}
+                />
+              )}
+            </TouchableOpacity>
+            <Text style={styles.rememberMeText}>I have read and agree</Text>
+            <TouchableOpacity onPress={() => {}}>
+              <Text style={styles.forgotText}> Terms of Service</Text>
+            </TouchableOpacity>
+          </View>
+          {isLoading ? (
+            <View style={styles.activityIndicator}>
+              <ActivityIndicator size="large" color={Colors.greenMain} />
+            </View>
+          ) : (
+            <ButtonComponent
+              title={'SIGN UP'}
+              onPress={() => {
+                signUpHandler(email, password, login, name, surname);
+              }}
+              buttonContainerStyle={{padding: 0}}
+            />
+          )}
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingComponent>
   );
 };
 
@@ -186,6 +185,10 @@ export const screenOptions = {
 };
 
 const styles = StyleSheet.create({
+  screen: {
+    flex: 1,
+    backgroundColor: Colors.blackBackground,
+  },
   walletIcon: {
     width: 87,
     height: 81,
