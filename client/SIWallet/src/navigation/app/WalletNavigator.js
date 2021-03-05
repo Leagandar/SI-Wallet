@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, TouchableOpacity, Image} from 'react-native';
+import {View, TouchableOpacity, Image, StyleSheet} from 'react-native';
 import {createStackNavigator, TransitionPresets} from '@react-navigation/stack';
 import TabNavigator, {screenOptions as tabScreenOptions} from './TabNavigator';
 import ProfileNavigator from './ProfileNavigator';
@@ -28,7 +28,7 @@ const WalletNavigator = (props) => {
   return (
     <MyStackNavigator.Navigator
       screenOptions={defaultNavOptions}
-      initialRouteName="StartupScreen">
+      initialRouteName="TabNavigator">
       <MyStackNavigator.Screen
         name="StartupScreen"
         component={StartupScreen}
@@ -39,11 +39,7 @@ const WalletNavigator = (props) => {
         component={TabNavigator}
         options={({route, navigation}) => ({
           headerTitle: getHeaderTitle(route),
-          headerTitleStyle: {
-            fontSize: 28,
-            fontFamily: Global.fonts.BALSAMIQ_BOLD,
-            color: Colors.whiteTitle,
-          },
+          headerTitleStyle: styles.headerTitle,
           headerTitleAlign: 'center',
           headerRight:
             getHeaderTitle(route) === 'Bots'
@@ -57,11 +53,7 @@ const WalletNavigator = (props) => {
                     }}>
                     <Image
                       source={require('../../assets/images/addIcon.png')}
-                      style={{
-                        height: 24,
-                        width: 24,
-                        marginRight: 13,
-                      }}
+                      style={styles.addIcon}
                     />
                   </TouchableOpacity>
                 )
@@ -111,5 +103,18 @@ function getHeaderTitle(route) {
       return 'Profile';
   }
 }
+
+const styles = StyleSheet.create({
+  addIcon: {
+    height: 24,
+    width: 24,
+    marginRight: 13,
+  },
+  headerTitle: {
+    fontSize: 28,
+    fontFamily: Global.fonts.BALSAMIQ_BOLD,
+    color: Colors.whiteTitle,
+  },
+});
 
 export default WalletNavigator;
